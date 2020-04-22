@@ -61,10 +61,10 @@ class Network(nn.Module):
         padding = 0
 
         # The input and output
-        self.convolution1 = nn.Conv3d(embedding_dim, 400,kernel_size,padding=padding) #TODO: Optimize ALL of these when Data Size is known
+        self.convolution1 = nn.Conv3d(embedding_dim, 400, kernel_size, padding=padding) #TODO: Optimize ALL of these when Data Size is known
         # We may want to increase the channel size from input to gain better performance.
         self.pool1 = nn.MaxPool3d(kernel_size)
-        self.convolution2 = nn.Conv3d(200, 100,kernel_size,padding=padding)
+        self.convolution2 = nn.Conv3d(200, 100, kernel_size, padding=padding)
         self.pool2 = nn.MaxPool3d(kernel_size)
 
         # LSTM to combine feature encoding from above with feature encodings from past networks
