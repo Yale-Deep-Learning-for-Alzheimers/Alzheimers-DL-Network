@@ -40,7 +40,7 @@ training_epochs = 50
 # expected format:
 # training_data stores batches of MRI's and classifications like this:
 # [[Patient MRIs,Patient Classifications],[Patient MRIs, Patient Classifications]...]
-# The Patient MRIs be
+# The Patient MRIs be ...
 # the Classifications are expected as single integers indicating the chance a patient will
 # get Alzheimer's within the next (5) years, with a positive diagnosis given by '1'.
 
@@ -48,7 +48,7 @@ training_data = ...
 
 
 class Network(nn.Module):
-    """ CNN LSTM to classify ADNI data """
+    """ CNN-LSTM to classify ADNI data """
 
     def __init__(self, embedding_dim, hidden_dim, output_size):
         super(Network, self).__init__()
