@@ -44,9 +44,15 @@ class MRIData(Dataset):
         """
         # Get current_patient, where [0] is their ID and [1] is their list of images
         current_patient = self.data_array[index]
+        # TODO: create a tensor to store the individual image tensors
         # For each image path, process the .nii image using nibabel
         for image_path in current_patient[1]:
-            pass
+            file_name = os.path.join(self.root_dir, image_path)
+            neuroimage = nib.load(file_name)
+            # TODO: convert neuroimage to a tensor
+            # TODO: add to main tensor
+        
+        pass
 
 
 class DataLoader(object):
