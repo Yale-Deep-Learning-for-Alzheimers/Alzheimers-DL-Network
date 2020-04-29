@@ -147,3 +147,9 @@ for epoch in range(training_epochs):
         loss = loss_function(torch.tensor(predictions_of_batch), current_classifications_batch)
         loss.backward()
         optimizer.step()"""
+# testing. Run random data through network to ensure that everything checks out.
+if __name__ == "__main__":
+    big_net = Network(1,(100,100,100),3)
+    iou = torch.randn(4,1,100,100,100)
+    preds = big_net(iou)
+    print(preds)
