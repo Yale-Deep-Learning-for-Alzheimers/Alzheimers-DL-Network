@@ -5,10 +5,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import math
+# torch.manual_seed(1) # for reproducibility for testing purposes. Delete during actual training.
 
-torch.manual_seed(1) # for reproducibility for testing purposes. Delete during actual training.
-
-
+""" moved to evaluate.py
 # ============= Hyperparameters ===================
 batch_size = 64
 
@@ -38,44 +38,84 @@ training_epochs = 50
 
 training_data = ...
 
+"""
 
 class Network(nn.Module):
-    """ CNN LSTM to classify ADNI data """
+    """ CNN LSTM to classify ADNI data. Specify:
+        + embedding dimension, the number of channels each input image has (likely 1).
+        + input_size, the shape of the input in a tuple: (Depth, Height, Width)
+        + output_size, a scalar (like 4) that specifies the number of predictions the network should make."""
 
-    def __init__(self, embedding_dim, hidden_dim, output_size):
+    def __init__(self, input_channels, input_shape, output_size):
         super(Network, self).__init__()
-        self.hidden_dim = hidden_dim
+
+        print("Initializing hyperparameters...")
+
+        def dimensions_after_convolution(kernel, stride, padding, input_shape):
+            # helper function for automatic calculation of hyperparameters
+            output_depth = math.floor((input_shape[0] + 2 * padding - kernel + 1) / stride + (
+                    stride - 1) / stride)
+            output_height = math.floor((input_shape[1] + 2 * padding - kernel + 1) / stride + (
+                    stride - 1) / stride)  # the total height is the input plus twice the padding
+            output_width = math.floor((input_shape[2] + 2 * padding - kernel + 1) / stride + (stride - 1) / stride)
+            return output_depth, output_height, output_width
 
         # CNN for feature selection and encoding.
 
         # CNN Specific Hyperparameters: TODO: Optimize! These are guesses.
-        kernel_size = 3
+        kernel_size = 4
         padding = 0
 
+
         # The input and output
-        self.convolution1 = nn.Conv3d(embedding_dim, 400,kernel_size,padding=padding) #TODO: Optimize ALL of these when Data Size is known
+        self.convolution1 = nn.Conv3d(input_channels, 200,kernel_size,padding=padding) #TODO: Optimize ALL of these when Data Size is known
+        current_shape = dimensions_after_convolution(kernel_size,1,padding,input_shape)
         # We may want to increase the channel size from input to gain better performance.
         self.pool1 = nn.MaxPool3d(kernel_size)
+        current_shape = dimensions_after_convolution(kernel_size,kernel_size,padding,current_shape)
+
         self.convolution2 = nn.Conv3d(200, 100,kernel_size,padding=padding)
+        current_shape = dimensions_after_convolution(kernel_size, 1, padding, current_shape)
+
         self.pool2 = nn.MaxPool3d(kernel_size)
+        current_shape = dimensions_after_convolution(kernel_size, kernel_size, padding, current_shape)
+
+        self.convolution3 = nn.Conv3d(100, 1, kernel_size, padding=padding)
+        current_shape = dimensions_after_convolution(kernel_size, 1, padding, current_shape)
 
         # LSTM to combine feature encoding from above with feature encodings from past networks
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim)
+        # the input dimension is the volume of the remaining 3d image after convolution and pooling.
+        lstm_input_dimensions = current_shape[0]*current_shape[1]*current_shape[2]
+        print(f"For the specified shape, the LSTM input dimension has been calculated at {lstm_input_dimensions}.")
+        if lstm_input_dimensions>1000: print("This seems very large. Perhaps you should add some more layers to your network, or increase the kernel size.")
+        self.lstm = nn.LSTM(lstm_input_dimensions, lstm_input_dimensions)
 
         # The linear layer that maps from hidden state space to prediction space
-        self.prediction_converter = nn.Linear(hidden_dim, output_size)
+        self.prediction_converter = nn.Linear(lstm_input_dimensions, output_size)
+
+
 
     def forward(self, MRI):
-        feature_space = self.pool2(self.convolution2(self.pool1(self.convolution1(MRI))))
-        lstm_out,_ = self.lstm(feature_space)
+        feature_space = self.convolution3(self.pool2(self.convolution2(self.pool1(self.convolution1(MRI)))))
+        # flatten the output layers from the CNN into a 1d tensor
+        print(feature_space.shape)
+        lstm_in = torch.cat([torch.flatten(image[0])[...,None] for image in feature_space],axis=0).view(feature_space.shape[0],1,-1) # This assumes one output channel from CNN
+        print(lstm_in)
+        print('the lstm input has shape ', lstm_in.shape)
+        # lstm_in = torch.cat([torch.flatten(image[0]) for image in feature_space],axis=0) # This assumes one output channel
+        lstm_out,_ = self.lstm(lstm_in) # assuming mini-batch of 1
         # To feed the final LSTM layer through the last layer, we need to convert the multidimensional output to
         # a single dimensional tensor.
+        print(f"lstm output is {lstm_out} with shape {lstm_out.shape}")
         dense_conversion = self.prediction_converter(lstm_out)
+        dense_conversion = torch.squeeze(dense_conversion)
+        print("the dense conversions are",dense_conversion)
+        print(len(dense_conversion))
         # Softmax converts into sequence of probabilities. This could be tweaked.
         predictions = nn.Softmax(dense_conversion)
         return predictions
 
-
+""" The following has been reassigned to evaluate.py 
 model = Network(input_size, LSTM_output_size, output_dimension)
 
 # Justifications for MSE:
@@ -106,4 +146,4 @@ for epoch in range(training_epochs):
         # Compute loss
         loss = loss_function(torch.tensor(predictions_of_batch), current_classifications_batch)
         loss.backward()
-        optimizer.step()
+        optimizer.step()"""
