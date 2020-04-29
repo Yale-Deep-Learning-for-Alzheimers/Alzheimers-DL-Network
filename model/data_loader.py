@@ -48,23 +48,26 @@ class MRIData(Dataset):
         """
         # Get current_patient, where [0] is their ID and [1] is their list of images
         current_patient = self.data_array[index]
-        # TODO: create a tensor to store the individual image tensors
+        # List to store the individual image tensors
+        images_list = []
         # For each image path, process the .nii image using nibabel
         for image_path in current_patient[1]:
             file_name = os.path.join(self.root_dir, image_path)
             neuroimage = nib.load(file_name)
-            # TODO: convert neuroimage to a tensor
-            # TODO: add to main tensor
-            # TODO: handle the diagnosis (i.e. store wehther it's AD or MCI)
-        
-        pass
+            # Extract the N-D array containing the image data from the nibabel image object
+            image_data = neuroimage.get_fdata()
+            image_data_tensor = torch.Tensor(image_data) # Convert image data to a tensor
+            images_list.append(image_data_tensor)
+            # TODO: handle the diagnosis (i.e. store whether it's AD or MCI)
 
+        # Convert the list of individual image tensors to a tensor itself
+        images_tensor = torch.stack(images_list)
+        return images_tensor
 
-class DataLoader(object):
-    """
-    Handles data
-    """
-    # TODO: I don't think we need this if we have our Dataset set up
+"""
+class DataLoader(object):    
+    # FIXME: I don't think we need this if we have our Dataset set up
 
     def __init__(self):
         pass
+"""
