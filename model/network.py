@@ -13,7 +13,7 @@ torch.manual_seed(1) # for reproducibility for testing purposes. Delete during a
 batch_size = 64
 
 # Dimensionality of the data outputted by the LSTM,
-# forwarded to the final dense layer. THIS IS A GUESS CURRENTLY
+# forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 # TODO: Find a sensible output size for the LSTM, perhaps by reviewing literature.
 LSTM_output_size = 16
 
