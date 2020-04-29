@@ -23,6 +23,7 @@ class MRIData(Dataset):
     #       so those two .pkl dicts should be combined into one array prior to calling this
     # TODO: shuffle the array so the order of AD and MCI patients is random (but their
     #       individual image sequences do not get affected and stay ordered)
+    # FIXME: where is the label for the diagnosis?
 
     def __init__(self, root_dir, data_array):
         """
@@ -46,6 +47,7 @@ class MRIData(Dataset):
         Allows indexing of dataset      (required by DataLoader)
         Returns a tensor that contains the patient's MRI neuroimages and their diagnoses (AD or MCI)
         """
+        
         # Get current_patient, where [0] is their ID and [1] is their list of images
         current_patient = self.data_array[index]
         # List to store the individual image tensors
@@ -62,6 +64,7 @@ class MRIData(Dataset):
 
         # Convert the list of individual image tensors to a tensor itself
         images_tensor = torch.stack(images_list)
+
         return images_tensor
 
 """
