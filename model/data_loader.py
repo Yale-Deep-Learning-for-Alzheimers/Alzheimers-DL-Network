@@ -19,14 +19,6 @@ class MRIData(Dataset):
     These dictionaries are converted to arrays and passed into this dataset,
     where the paths will be accessed and their neuroimages processed into tensors.
     """
-    # TODO: we should only be getting one data_array with both AD and MCI patients,
-    #       so those two .pkl dicts should be combined into one array prior to calling this
-    # TODO: shuffle the array so the order of AD and MCI patients is random (but their
-    #       individual image sequences do not get affected and stay ordered)
-    # FIXME: where is the label for the diagnosis? should that be an additional dimension
-    #        in the final tensor returned by __getitem__?
-    #       NOTE: the final element in each index array is the diagnosis (0 or 1)
-    #       ===> strip that out from the array before iterating through image paths
 
     def __init__(self, root_dir, data_array):
         """
@@ -49,7 +41,6 @@ class MRIData(Dataset):
         """
         Allows indexing of dataset      (required by DataLoader)
         Returns a tensor that contains the patient's MRI neuroimages and their diagnoses (AD or MCI)
-        TODO: currently returns MRI image data as a tensor but NOT the diagnoses
         """
         
         # Get current_patient, where [0] is their ID and [1] is their list of images
@@ -66,7 +57,6 @@ class MRIData(Dataset):
             image_data = neuroimage.get_fdata()
             image_data_tensor = torch.Tensor(image_data) # Convert image data to a tensor
             images_list.append(image_data_tensor)
-            # TODO: handle the diagnosis (i.e. store whether it's AD or MCI)
 
         # Convert the list of individual image tensors to a tensor itself
         images_tensor = torch.stack(images_list)
