@@ -56,6 +56,8 @@ class MRIData(Dataset):
         current_patient = self.data_array[index]
         # List to store the individual image tensors
         images_list = []
+        # The last element in the current patient's array is the classification
+        patient_label = current_patient.pop()
         # For each image path, process the .nii image using nibabel
         for image_path in current_patient[1]:
             file_name = os.path.join(self.root_dir, image_path)
@@ -69,7 +71,11 @@ class MRIData(Dataset):
         # Convert the list of individual image tensors to a tensor itself
         images_tensor = torch.stack(images_list)
 
-        return images_tensor
+        # Return a dictionary with the images tensor and the label
+        image_dict = {'images': images_tensor, 'label': patient_label}
+        # NOTE: alternative approach is to just have the classification be the first element in the images_tensor
+
+        return image_dict
 
 """
 class DataLoader(object):    
