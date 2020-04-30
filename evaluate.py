@@ -8,10 +8,11 @@ import torch.optim as optim
 
 # To unpack ADNI data
 import pickle
+import random
 
 # Import network
 import sys
-sys.path.insert(1, '/model')
+sys.path.insert(1, './model')
 from network import Network
 from data_loader import MRIData
 # torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
@@ -40,6 +41,8 @@ training_epochs = 10
 # the Classifications should be binary 0,1 probabilities in output_dimension dimensions. Perhaps something like this:
 # [chance_of_normality: 0 , chance of MCI: 0, chance of AD: 1]
 
+MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
+random.shuffle(MRI_images_list)
 
 
 # ========== TODO: Use DataLoader to Create Train/Test Split ==============
