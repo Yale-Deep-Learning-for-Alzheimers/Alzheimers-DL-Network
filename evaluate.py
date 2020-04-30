@@ -78,7 +78,7 @@ loss_function = nn.MSELoss()
 # Perhaps use ADAM, if SGD doesn't give good results
 optimizer = optim.SGD(model.parameters(), lr=learning_rate)
 
-
+# FIXME: the training function needs to be modified to use enumerate(train_loader) (i.e. the main for loop)
 # training function
 def train(model,training_data,optimizer,criterion):
     """ takes (model, training data, optimizer, loss function)"""
