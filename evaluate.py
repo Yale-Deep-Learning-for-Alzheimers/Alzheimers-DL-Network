@@ -45,7 +45,7 @@ training_epochs = 10
 MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
 random.shuffle(MRI_images_list)
 # NOTE: simply for testing out the data loader, take the first three images from the list
-MRI_images_list = MRI_images_list[:3]
+MRI_images_list = MRI_images_list[:3] # data sample
 print(MRI_images_list)
 
 # ========== TODO: Use DataLoader to Create Train/Test Split ==============
