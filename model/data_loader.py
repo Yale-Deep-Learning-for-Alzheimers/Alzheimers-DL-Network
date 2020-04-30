@@ -25,6 +25,8 @@ class MRIData(Dataset):
     #       individual image sequences do not get affected and stay ordered)
     # FIXME: where is the label for the diagnosis? should that be an additional dimension
     #        in the final tensor returned by __getitem__?
+    #       NOTE: the final element in each index array is the diagnosis (0 or 1)
+    #       ===> strip that out from the array before iterating through image paths
 
     def __init__(self, root_dir, data_array):
         """

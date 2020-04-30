@@ -17,6 +17,7 @@ from network import Network
 from data_loader import MRIData
 # torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
 torch.manual_seed(1)
+random.seed(1)
 
 # ============= Hyperparameters ===================
 batch_size = 64
@@ -43,7 +44,9 @@ training_epochs = 10
 
 MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
 random.shuffle(MRI_images_list)
-
+# NOTE: simply for testing out the data loader, take the first three images from the list
+MRI_images_list = MRI_images_list[:3]
+print(MRI_images_list)
 
 # ========== TODO: Use DataLoader to Create Train/Test Split ==============
 
