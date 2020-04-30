@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from torch.utils.data import DataLoader
 
 # To unpack ADNI data
 import pickle
@@ -20,7 +21,7 @@ torch.manual_seed(1)
 random.seed(1)
 
 # ============= Hyperparameters ===================
-batch_size = 64
+BATCH_SIZE = 64
 # Dimensionality of the data outputted by the LSTM,
 # forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 LSTM_output_size = 16
@@ -45,10 +46,15 @@ training_epochs = 10
 MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
 random.shuffle(MRI_images_list)
 # NOTE: simply for testing out the data loader, take the first three images from the list
-MRI_images_list = MRI_images_list[:3] # data sample
-print(MRI_images_list)
+MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
+                                      # root dir should be './data_sample/'
+# print(MRI_images_list)
 
 # ========== TODO: Use DataLoader to Create Train/Test Split ==============
+
+DATA_ROOT_DIR = './data_sample'
+train_dataset = MRIData(DATA_ROOT_DIR, MRI_images_list)
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 training_data = ...
 test_data = ...
