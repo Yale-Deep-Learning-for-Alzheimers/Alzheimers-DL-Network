@@ -44,13 +44,15 @@ class MRIData(Dataset):
         """
         
         # Get current_patient, where [0] is their ID and [1] is their list of images
+        # NOTE: you can't index current_patient[1] to get the list of images, you just index current_patient itself... not sure why this works but it works
         current_patient = self.data_array[index]
         # List to store the individual image tensors
         images_list = []
         # The last element in the current patient's array is the classification
         patient_label = current_patient.pop()
         # For each image path, process the .nii image using nibabel
-        for image_path in current_patient[1]:
+        for image_path in current_patient:
+            print(image_path)
             file_name = os.path.join(self.root_dir, image_path)
             neuroimage = nib.load(file_name)
             # Extract the N-D array containing the image data from the nibabel image object
@@ -66,11 +68,4 @@ class MRIData(Dataset):
         # NOTE: alternative approach is to just have the classification be the first element in the images_tensor
 
         return image_dict
-
-"""
-class DataLoader(object):    
-    # FIXME: I don't think we need this if we have our Dataset set up
-
-    def __init__(self):
-        pass
-"""
+        

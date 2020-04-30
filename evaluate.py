@@ -17,6 +17,7 @@ sys.path.insert(1, './model')
 from network import Network
 from data_loader import MRIData
 # torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
+# NOTE: don't change the seed numbers as we debug --- the specific files in data_sample are dependent on these seeds
 torch.manual_seed(1)
 random.seed(1)
 
@@ -55,6 +56,10 @@ MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
 DATA_ROOT_DIR = './data_sample'
 train_dataset = MRIData(DATA_ROOT_DIR, MRI_images_list)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+
+for it, train_data in enumerate(train_loader):
+    print("Test\n")
+    print(train_data)
 
 training_data = ...
 test_data = ...
