@@ -1,7 +1,5 @@
 """ Unified home for training and evaluation. Imports model and dataloader."""
-# MISSING:
-# * Data Importation
-#
+
 import time
 import torch
 import torch.nn as nn
@@ -10,9 +8,10 @@ import torch.optim as optim
 # import our network
 import sys
 sys.path.insert(1, '/model')
-import network.py
-import data_loader.py
+from model/network import Network
+from model/data_loader import MRIData
 # torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
+torch.manual_seed(1)
 
 # ============= Hyperparameters ===================
 batch_size = 64
@@ -26,7 +25,7 @@ training_epochs = 10
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
 
-# ========== Import Training Data Here ==============
+# ========== TODO: Import Data ==============
 # expected format:
 # training_data stores batches of MRI's and classifications like this: [batch,batch,batch] : )
 # each batch should be in form
@@ -36,6 +35,8 @@ training_epochs = 10
 # Bunch of Classifications = [Patient 1 classifications, Patient 2 Classifications...]
 # the Classifications should be binary 0,1 probabilities in output_dimension dimensions. Perhaps something like this:
 # [chance_of_normality: 0 , chance of MCI: 0, chance of AD: 1]
+
+# ========== TODO: Use DataLoader to Create Train/Test Split ==============
 
 training_data = ...
 test_data = ...
