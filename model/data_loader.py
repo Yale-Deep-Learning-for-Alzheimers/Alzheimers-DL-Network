@@ -57,6 +57,7 @@ class MRIData(Dataset):
             neuroimage = nib.load(file_name)
             # Extract the N-D array containing the image data from the nibabel image object
             image_data = neuroimage.get_fdata()
+            # TODO: resize and interpolate as necessary
             image_data_tensor = torch.Tensor(image_data) # Convert image data to a tensor
             images_list.append(image_data_tensor)
 
@@ -68,4 +69,3 @@ class MRIData(Dataset):
         # NOTE: alternative approach is to just have the classification be the first element in the images_tensor
 
         return image_dict
-        
