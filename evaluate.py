@@ -30,6 +30,8 @@ input_size = 1000 # Size of the processed MRI scans fed into the CNN. TODO: Chan
 output_dimension = 1 # the number of predictions the model will make
 learning_rate = 0.1
 training_epochs = 10
+# The size of images passed, as a tuple
+data_shape = (200,200,150)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
 
@@ -60,13 +62,14 @@ train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 for it, train_data in enumerate(train_loader):
     print("Test\n")
     print(train_data)
-    print(train_data['images'].shape)
+    print("The first index is ",train_data['images'][0])
+    print(train_data['images'][0].shape)
 
 training_data = ...
 test_data = ...
 
 
-model = Network(input_size, LSTM_output_size, output_dimension)
+model = Network(input_size, data_shape, output_dimension)
 
 # Justifications for MSE:
 # - well-known,functional in many contexts
@@ -87,24 +90,32 @@ def train(model,training_data,optimizer,criterion):
     model.train()
     # initialize the per epoch loss
     epoch_loss = 0
-    for current_MRI_batch in training_data:
+    for i, patient_data in enumerate(training_data):
         # Clear gradients
         model.zero_grad()
-        predictions_of_batch = []
-        # loop through by patient
-        for patient_data in current_MRI_batch:
-            patient_MRI = patient_data["images"]
-            patient_classifications = patient_data["labels"]
-            # clear the LSTM hidden state after each patient
-            model.hidden = model.init_hidden()
-            # produce prediction for current MRI scan, and append to predictions array
-            current_predictions = model(patient_MRI)
-            predictions_of_batch.append(current_prediction)
-            # Compute loss
-            loss = criterion(current_predictions, patient_classifications)
-            epoch_loss += loss.item()
-            loss.backward()
-            optimizer.step()
+        # clear the LSTM hidden state after each patient
+        model.hidden = model.init_hidden()
+
+        #get the MRI's and classifications for the current patient
+        patient_MRI = patient_data["images"]
+        patient_classifications = patient_data["labels"]
+
+        # produce prediction for current MRI scan, and append to predictions array
+        out = model(patient_MRI)
+
+        model_diagnoses = out[:,0] # extract the first column of the output, which we train classify the MRIs
+        # Compute loss with respect to
+        loss = criterion(model_diagnoses, patient_classifications)
+
+        # for model prediction and classification
+        patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
+        model_predictions = out[:,1] # extract the second column of the output
+        loss += criterion(model_predictions, patient_endstate)
+
+        epoch_loss += loss.item()
+        loss.backward()
+        optimizer.step()
+
     return epoch_loss/len(training_data)
 
 def test(model, test_data, criterion):
