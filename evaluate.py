@@ -60,6 +60,7 @@ train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 for it, train_data in enumerate(train_loader):
     print("Test\n")
     print(train_data)
+    print(train_data['images'].shape)
 
 training_data = ...
 test_data = ...
@@ -86,22 +87,24 @@ def train(model,training_data,optimizer,criterion):
     model.train()
     # initialize the per epoch loss
     epoch_loss = 0
-    for current_MRI_batch, current_classifications_batch in training_data:
+    for current_MRI_batch in training_data:
         # Clear gradients
         model.zero_grad()
         predictions_of_batch = []
         # loop through by patient
-        for patient_MRI, patient_prognosis in zip(current_MRI_batch, current_classifications_batch):
+        for patient_data in current_MRI_batch:
+            patient_MRI = patient_data["images"]
+            patient_classifications = patient_data["labels"]
             # clear the LSTM hidden state after each patient
             model.hidden = model.init_hidden()
             # produce prediction for current MRI scan, and append to predictions array
-            current_prediction = model(patient_MRI)
+            current_predictions = model(patient_MRI)
             predictions_of_batch.append(current_prediction)
-        # Compute loss
-        loss = criterion(torch.tensor(predictions_of_batch), current_classifications_batch)
-        epoch_loss += loss.item()
-        loss.backward()
-        optimizer.step()
+            # Compute loss
+            loss = criterion(current_predictions, patient_classifications)
+            epoch_loss += loss.item()
+            loss.backward()
+            optimizer.step()
     return epoch_loss/len(training_data)
 
 def test(model, test_data, criterion):
@@ -129,7 +132,7 @@ def test(model, test_data, criterion):
 best_test_accuracy = float('inf')
 
 # this evaluation workflow was adapted from Ben Trevett's design on https://github.com/bentrevett/pytorch-seq2seq/blob/master/1%20-%20Sequence%20to%20Sequence%20Learning%20with%20Neural%20Networks.ipynb
-for epoch in range(training_epochs):
+"""for epoch in range(training_epochs):
 
     start_time = time.time()
 
@@ -150,6 +153,4 @@ for epoch in range(training_epochs):
     print(f"\tTest Loss: {test_loss:.3f}| Test Perplexity: {math.exp(test_loss):7.3f}")
 
 
-
-
-
+"""

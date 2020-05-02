@@ -101,16 +101,16 @@ class Network(nn.Module):
         print(feature_space.shape)
         lstm_in = torch.cat([torch.flatten(image[0])[...,None] for image in feature_space],axis=0).view(feature_space.shape[0],1,-1) # This assumes one output channel from CNN
         print(lstm_in)
-        print('the lstm input has shape ', lstm_in.shape)
+        # print('the lstm input has shape ', lstm_in.shape)
         # lstm_in = torch.cat([torch.flatten(image[0]) for image in feature_space],axis=0) # This assumes one output channel
         lstm_out,_ = self.lstm(lstm_in) # assuming mini-batch of 1
         # To feed the final LSTM layer through the last layer, we need to convert the multidimensional output to
         # a single dimensional tensor.
-        print(f"lstm output is {lstm_out} with shape {lstm_out.shape}")
+        # print(f"lstm output is {lstm_out} with shape {lstm_out.shape}")
         dense_conversion = self.prediction_converter(lstm_out)
         dense_conversion = torch.squeeze(dense_conversion)
-        print("the dense conversions are",dense_conversion)
-        print(len(dense_conversion))
+        # print("the dense conversions are",dense_conversion)
+        # print(len(dense_conversion))
         # Softmax converts into sequence of probabilities. This could be tweaked.
         predictions = nn.Softmax(dense_conversion)
         return predictions
