@@ -46,7 +46,7 @@ class Network(nn.Module):
         + input_size, the shape of the input in a tuple: (Depth, Height, Width)
         + output_size, a scalar (like 4) that specifies the number of predictions the network should make."""
 
-    def __init__(self, input_channels, input_shape, output_size):
+    def __init__(self, input_channels, input_shape, output_size, lstm_layers=1):
         super(Network, self).__init__()
 
         print("Initializing hyperparameters...")
@@ -65,6 +65,7 @@ class Network(nn.Module):
         # CNN Specific Hyperparameters: TODO: Optimize! These are guesses.
         kernel_size = 4
         padding = 0
+
 
 
         # The input and output
@@ -88,12 +89,19 @@ class Network(nn.Module):
         lstm_input_dimensions = current_shape[0]*current_shape[1]*current_shape[2]
         print(f"For the specified shape, the LSTM input dimension has been calculated at {lstm_input_dimensions}.")
         if lstm_input_dimensions>1000: print("This seems very large. Perhaps you should add some more layers to your network, or increase the kernel size.")
-        self.lstm = nn.LSTM(lstm_input_dimensions, lstm_input_dimensions)
+        self.lstm = nn.LSTM(lstm_input_dimensions, lstm_input_dimensions,lstm_layers)
 
         # The linear layer that maps from hidden state space to prediction space
         self.prediction_converter = nn.Linear(lstm_input_dimensions, output_size)
 
+        self.num_layers = lstm_layers
+        self.hidden_dimensions = lstm_input_dimensions
+        # self.hidden = self.init_hidden(3)
 
+    def init_hidden(self,batch_size):
+        # Used for initializing LSTM weights between patients.
+        return (torch.zeros(self.num_layers,batch_size, self.hidden_dimensions),
+                torch.zeros(self.num_layers,batch_size, self.hidden_dimensions))
 
     def forward(self, MRI):
         feature_space = self.convolution3(self.pool2(self.convolution2(self.pool1(self.convolution1(MRI)))))
@@ -103,7 +111,7 @@ class Network(nn.Module):
         print(lstm_in)
         # print('the lstm input has shape ', lstm_in.shape)
         # lstm_in = torch.cat([torch.flatten(image[0]) for image in feature_space],axis=0) # This assumes one output channel
-        lstm_out,_ = self.lstm(lstm_in) # assuming mini-batch of 1
+        lstm_out, self.hidden = self.lstm(lstm_in) # assuming mini-batch of 1
         # To feed the final LSTM layer through the last layer, we need to convert the multidimensional output to
         # a single dimensional tensor.
         # print(f"lstm output is {lstm_out} with shape {lstm_out.shape}")
@@ -111,9 +119,8 @@ class Network(nn.Module):
         dense_conversion = torch.squeeze(dense_conversion)
         # print("the dense conversions are",dense_conversion)
         # print(len(dense_conversion))
-        # Softmax converts into sequence of probabilities. This could be tweaked.
-        predictions = nn.Softmax(dense_conversion)
-        return predictions
+
+        return dense_conversion
 
 """ The following has been reassigned to evaluate.py 
 model = Network(input_size, LSTM_output_size, output_dimension)

@@ -1,6 +1,7 @@
 """ Unified home for training and evaluation. Imports model and dataloader."""
 
 import time
+import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -26,12 +27,17 @@ BATCH_SIZE = 64
 # Dimensionality of the data outputted by the LSTM,
 # forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 LSTM_output_size = 16
-input_size = 1000 # Size of the processed MRI scans fed into the CNN. TODO: Change
-output_dimension = 1 # the number of predictions the model will make
+input_size = 3 # Size of the processed MRI scans fed into the CNN.
+
+output_dimension = 4 # the number of predictions the model will make
+# 2 are converted into a binary diagnosis, two are used for prediction
+# NOTE: The training architecture currently assumes 4. If you change output-dimension,
+# update the splicing used in train()
+
 learning_rate = 0.1
 training_epochs = 10
 # The size of images passed, as a tuple
-data_shape = (200,200,150)
+data_shape = (192,192,160)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
 
@@ -58,31 +64,25 @@ MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
 DATA_ROOT_DIR = './data_sample'
 train_dataset = MRIData(DATA_ROOT_DIR, MRI_images_list)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-
+"""
 for it, train_data in enumerate(train_loader):
     print("Test\n")
     print(train_data)
     print("The first index is ",train_data['images'][0])
+    print("classifications are ",train_data['label'])
     print(train_data['images'][0].shape)
-
-training_data = ...
+"""
+training_data = train_loader
 test_data = ...
 
 
 model = Network(input_size, data_shape, output_dimension)
 
-# Justifications for MSE:
-# - well-known,functional in many contexts
-# - this isn't, strictly, classification. We should have smooth
-#   predictions
-# The case against MSE:
-# - Errors will be pretty small if we are working with single years. We could multiply that by some large constant.
-loss_function = nn.MSELoss()
+loss_function = nn.CrossEntropyLoss()
 
 # Perhaps use ADAM, if SGD doesn't give good results
 optimizer = optim.SGD(model.parameters(), lr=learning_rate)
 
-# FIXME: the training function needs to be modified to use enumerate(train_loader) (i.e. the main for loop)
 # training function
 def train(model,training_data,optimizer,criterion):
     """ takes (model, training data, optimizer, loss function)"""
@@ -90,26 +90,38 @@ def train(model,training_data,optimizer,criterion):
     model.train()
     # initialize the per epoch loss
     epoch_loss = 0
+    # TODO: is enumerate necessary? Maybe build a progress function into the thing.
     for i, patient_data in enumerate(training_data):
         # Clear gradients
         model.zero_grad()
         # clear the LSTM hidden state after each patient
-        model.hidden = model.init_hidden()
+        # TODO: Figure out if we need to clear the LSTM hidden states inbetween patients, and if so how to do this.
+        # print("Well, the model.hidden is",model.hidden)
+        # model.hidden = model.init_hidden(len(patient_data))
 
         #get the MRI's and classifications for the current patient
         patient_MRI = patient_data["images"]
-        patient_classifications = patient_data["labels"]
+        patient_classifications = patient_data["label"]
+        # print("patient classes ", patient_classifications)
+        patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
+        patient_endstate = patient_endstate.long()
+
+        # print("The number of input channels appears to be", patient_MRI.shape)
 
         # produce prediction for current MRI scan, and append to predictions array
         out = model(patient_MRI)
+        # print("model gives ",out)
+        #loss = criterion(out,patient_super)
 
-        model_diagnoses = out[:,0] # extract the first column of the output, which we train classify the MRIs
+        # loss from model diagnoses
+        model_diagnoses = out[:,:2]
+        # print("model diagnosis is ",model_diagnoses)# extract the first two columns of the output, which we train classify the MRIs
         # Compute loss with respect to
         loss = criterion(model_diagnoses, patient_classifications)
 
         # for model prediction and classification
-        patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
-        model_predictions = out[:,1] # extract the second column of the output
+        model_predictions = out[:,2:] # extract the second two columns of the output
+        # print("model predictions are ",model_predictions)
         loss += criterion(model_predictions, patient_endstate)
 
         epoch_loss += loss.item()
@@ -122,38 +134,57 @@ def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
     model.eval()
     epoch_loss = 0
-    with torch.no_grad():
-        for current_MRI_batch, current_classifications_batch in test_data:
-            # Clear gradients
-            model.zero_grad()
-            predictions_of_batch = []
-            # loop through by patient
-            for patient_MRI, patient_prognosis in zip(current_MRI_batch, current_classifications_batch):
-                # clear the LSTM hidden state after each patient
-                model.hidden = model.init_hidden()
-                # produce prediction for current MRI scan, and append to predictions array
-                current_prediction = model(patient_MRI)
-                predictions_of_batch.append(current_prediction)
-            # Compute loss
-            loss = criterion(torch.tensor(predictions_of_batch), current_classifications_batch)
-            epoch_loss += loss.item()
+    for i, patient_data in enumerate(test_data):
+        # Clear gradients
+        model.zero_grad()
+        # clear the LSTM hidden state after each patient
+        # print("Well, the model.hidden is",model.hidden)
+        # model.hidden = model.init_hidden(len(patient_data))
+
+        # get the MRI's and classifications for the current patient
+        patient_MRI = patient_data["images"]
+        patient_classifications = patient_data["label"]
+        # print("patient classes ", patient_classifications)
+        patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
+        patient_endstate = patient_endstate.long()
+
+        # print("The number of input channels appears to be", patient_MRI.shape)
+
+        # produce prediction for current MRI scan, and append to predictions array
+        out = model(patient_MRI)
+        # print("model gives ",out)
+        # loss = criterion(out,patient_super)
+
+        # loss from model diagnoses
+        model_diagnoses = out[:, :2]
+        # print("model diagnosis is ",model_diagnoses)# extract the first two columns of the output, which we train classify the MRIs
+        # Compute loss with respect to
+        loss = criterion(model_diagnoses, patient_classifications)
+
+        # for model prediction and classification
+        model_predictions = out[:, 2:]  # extract the second two columns of the output
+        # print("model predictions are ",model_predictions)
+        loss += criterion(model_predictions, patient_endstate)
+
+        epoch_loss += loss.item()
+
     return epoch_loss/len(test_data)
 
 # perform training and measure test accuracy. Save best performing model.
 best_test_accuracy = float('inf')
 
 # this evaluation workflow was adapted from Ben Trevett's design on https://github.com/bentrevett/pytorch-seq2seq/blob/master/1%20-%20Sequence%20to%20Sequence%20Learning%20with%20Neural%20Networks.ipynb
-"""for epoch in range(training_epochs):
+for epoch in range(training_epochs):
 
     start_time = time.time()
 
     train_loss = train(model, training_data, optimizer, loss_function)
-    test_loss = test(model, test_data, loss_function)
+    test_loss = 0 #test(model, test_data, loss_function)
 
     end_time = time.time()
 
-    epoch_mins = (end_time-start_time)/60
-    epoch_secs = (end_time-start_time)%60
+    epoch_mins = math.floor((end_time-start_time)/60)
+    epoch_secs = math.floor((end_time-start_time)%60)
 
     if test_loss<best_test_accuracy:
         best_test_accuracy=test_loss
@@ -162,6 +193,3 @@ best_test_accuracy = float('inf')
     print(f"Hurrah! Epoch {epoch+1}/{training_epochs} concludes. | Time: {epoch_mins}m {epoch_secs}s")
     print(f"\tTrain Loss: {train_loss:.3f}| Train Perplexity: {math.exp(train_loss):7.3f}")
     print(f"\tTest Loss: {test_loss:.3f}| Test Perplexity: {math.exp(test_loss):7.3f}")
-
-
-"""
