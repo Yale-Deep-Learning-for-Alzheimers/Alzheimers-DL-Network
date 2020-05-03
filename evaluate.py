@@ -92,9 +92,8 @@ def train(model,training_data,optimizer,criterion):
     epoch_loss = 0
     epoch_length = len(training_data)
 
-    # TODO: is enumerate necessary? Maybe build a progress function into the thing.
     for i, patient_data in enumerate(training_data):
-        if i%(math.floor(epoch_length/5)+1)==0: print(f"\t\tProgress:{i/epoch_length*100}%")
+        if i%(math.floor(epoch_length/5)+1)==0: print(f"\t\tTraining:{i/epoch_length*100}%")
         # Clear gradients
         model.zero_grad()
         # clear the LSTM hidden state after each patient
@@ -136,7 +135,9 @@ def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
     model.eval()
     epoch_loss = 0
+    epoch_length = len(test_data)
     for i, patient_data in enumerate(test_data):
+        if i%(math.floor(epoch_length/5)+1)==0: print(f"\t\tTesting Progress:{i/epoch_length*100}%")
         # Clear gradients
         model.zero_grad()
         # clear the LSTM hidden state after each patient
