@@ -98,7 +98,7 @@ class Network(nn.Module):
         self.hidden_dimensions = lstm_input_dimensions
         # self.hidden = self.init_hidden(3)
 
-    def init_hidden(self,batch_size):
+    def init_hidden(self,batch_size=1):
         # Used for initializing LSTM weights between patients.
         return (torch.zeros(self.num_layers,batch_size, self.hidden_dimensions),
                 torch.zeros(self.num_layers,batch_size, self.hidden_dimensions))
@@ -106,9 +106,9 @@ class Network(nn.Module):
     def forward(self, MRI):
         feature_space = self.convolution3(self.pool2(self.convolution2(self.pool1(self.convolution1(MRI)))))
         # flatten the output layers from the CNN into a 1d tensor
-        print(feature_space.shape)
+        # print(feature_space.shape)
         lstm_in = torch.cat([torch.flatten(image[0])[...,None] for image in feature_space],axis=0).view(feature_space.shape[0],1,-1) # This assumes one output channel from CNN
-        print(lstm_in)
+        # print(lstm_in)
         # print('the lstm input has shape ', lstm_in.shape)
         # lstm_in = torch.cat([torch.flatten(image[0]) for image in feature_space],axis=0) # This assumes one output channel
         lstm_out, self.hidden = self.lstm(lstm_in) # assuming mini-batch of 1
