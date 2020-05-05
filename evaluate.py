@@ -1,7 +1,7 @@
 """ Unified home for training and evaluation. Imports model and dataloader."""
 
-import time
 from __future__ import print_function
+import time
 import math
 import torch
 import torch.nn as nn
