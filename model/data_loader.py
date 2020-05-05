@@ -7,7 +7,12 @@ from torch.autograd import Variable
 from torch.utils.data import Dataset
 
 import nibabel as nib
+from scipy import ndimage
 
+# Dimensions of neuroimages after resizing
+STANDARD_DIM1 = 200
+STANDARD_DIM2 = 200
+STANDARD_DIM3 = 150
 
 class MRIData(Dataset):
     """
@@ -52,13 +57,24 @@ class MRIData(Dataset):
         patient_label = current_patient.pop()
         # For each image path, process the .nii image using nibabel
         for image_path in current_patient:
-            print(image_path)
+            # print(image_path) #FIXME: get rid of this
             file_name = os.path.join(self.root_dir, image_path)
-            neuroimage = nib.load(file_name)
+            neuroimage = nib.load(file_name) # Loads proxy image
             # Extract the N-D array containing the image data from the nibabel image object
-            image_data = neuroimage.get_fdata()
-            # TODO: resize and interpolate as necessary
-            image_data_tensor = torch.Tensor(image_data) # Convert image data to a tensor
+            image_data = neuroimage.get_fdata() # Retrieves array data
+            # Resize and interpolate image
+            image_size = image_data.shape # Store dimensions of N-D array
+            current_dim1 = image_size[0]
+            current_dim2 = image_size[1]
+            current_dim3 = image_size[2]
+            # Calculate scale factor for each direction
+            scale_factor1 = STANDARD_DIM1 / float(current_dim1)
+            scale_factor2 = STANDARD_DIM2 / float(current_dim2)
+            scale_factor3 = STANDARD_DIM3 / float(current_dim3)
+            # Resize image (spline interpolation)
+            image_data = ndimage.zoom(image_data, (scale_factor1, scale_factor2, scale_factor3))
+            # Convert image data to a tensor
+            image_data_tensor = torch.Tensor(image_data) 
             images_list.append(image_data_tensor)
 
         # Convert the list of individual image tensors to a tensor itself
