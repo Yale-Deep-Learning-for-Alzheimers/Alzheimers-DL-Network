@@ -57,7 +57,7 @@ class MRIData(Dataset):
         patient_label = current_patient.pop()
         # For each image path, process the .nii image using nibabel
         for image_path in current_patient:
-            # print(image_path) #FIXME: get rid of this
+            print(image_path) #FIXME: delete this
             file_name = os.path.join(self.root_dir, image_path)
             neuroimage = nib.load(file_name) # Loads proxy image
             # Extract the N-D array containing the image data from the nibabel image object
@@ -73,6 +73,7 @@ class MRIData(Dataset):
             scale_factor3 = STANDARD_DIM3 / float(current_dim3)
             # Resize image (spline interpolation)
             image_data = ndimage.zoom(image_data, (scale_factor1, scale_factor2, scale_factor3))
+            print("Resize success") #FIXME: delete this
             # Convert image data to a tensor
             image_data_tensor = torch.Tensor(image_data) 
             images_list.append(image_data_tensor)
