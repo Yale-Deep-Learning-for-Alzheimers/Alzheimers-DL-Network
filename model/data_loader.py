@@ -14,6 +14,9 @@ STANDARD_DIM1 = 200
 STANDARD_DIM2 = 200
 STANDARD_DIM3 = 150
 
+# Maximum number of images per patient
+MAX_NUM_IMAGES = 10
+
 class MRIData(Dataset):
     """
     MRI data
@@ -77,6 +80,15 @@ class MRIData(Dataset):
             # Convert image data to a tensor
             image_data_tensor = torch.Tensor(image_data) 
             images_list.append(image_data_tensor)
+        
+        # Add padding to make all final tensors the same size
+        while (len(images_list) < MAX_NUM_IMAGES):
+            padding_array = np.zeros((STANDARD_DIM1, STANDARD_DIM2, STANDARD_DIM3))
+            padding_tensor = torch.Tensor(padding_array)
+            images_list.append(padding_tensor)
+
+        if (len(images_list) > MAX_NUM_IMAGES):
+            print("Error: More than 10 images for one individual patient. Update MAX_NUM_IMAGES in data_loader.py")
 
         # Convert the list of individual image tensors to a tensor itself
         images_tensor = torch.stack(images_list)
