@@ -56,9 +56,9 @@ training_epochs = 10
 data_shape = (200,200,150)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
-# ============== Data Import ==============================================
-MRI_images_list = pickle.load(open("./Data/Combined_MRI_List.pkl", "rb"))
-
+# =========== Data import ==============
+MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
+# >>>>>>> 7b5e6ff7a0ab6f2c469e74a1c70a84a7bda68b4a
 random.shuffle(MRI_images_list)
 
 # How much of the data will be reserved for testing?
