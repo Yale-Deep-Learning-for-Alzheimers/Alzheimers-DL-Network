@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
+from torch.utils.data.sampler import SubsetRandomSampler
 
 # To unpack ADNI data
 import pickle
@@ -33,7 +34,7 @@ else:
     args.device = torch.device('cpu')
 
 # torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
-# NOTE: don't change the seed numbers as we debug --- the specific files in data_sample are dependent on these seeds
+# NOTE: don't change the seed numbers as we debug, or we might introduce user bias into the model!
 torch.manual_seed(1)
 random.seed(1)
 
@@ -55,42 +56,32 @@ training_epochs = 10
 data_shape = (200,200,150)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
-
-# ========== TODO: Import Data ==============
-# expected format:
-# training_data stores batches of MRI's and classifications like this: [batch,batch,batch] : )
-# each batch should be in form
-# [Bunch of MRIs, Bunch of Classifications]
-# and each 'bunch' in the batch should be grouped by patient
-# Bunch of MRIs = [Patient 1 MRIs, Patient 2 MRIs,...]
-# Bunch of Classifications = [Patient 1 classifications, Patient 2 Classifications...]
-# the Classifications should be binary 0,1 probabilities in output_dimension dimensions. Perhaps something like this:
-# [chance_of_normality: 0 , chance of MCI: 0, chance of AD: 1]
-
+# ============== Data Import ==============================================
 MRI_images_list = pickle.load(open("./Data/Combined_MRI_List.pkl", "rb"))
+
 random.shuffle(MRI_images_list)
-# NOTE: simply for testing out the data loader, take the first three images from the list
-# MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
-                                      # root dir should be './data_sample/'
+
+# How much of the data will be reserved for testing?
+train_size = int(0.7 * len(MRI_images_list))
+
+# Split list
+training_list = MRI_images_list[:train_size]
+test_list =  MRI_images_list[train_size:]
+
 # print(MRI_images_list)
 
-# ========== TODO: Use DataLoader to Create Train/Test Split ==============
-
 DATA_ROOT_DIR = './'
-train_dataset = MRIData(DATA_ROOT_DIR, MRI_images_list)
+train_dataset = MRIData(DATA_ROOT_DIR, training_list)
+test_dataset = MRIData(DATA_ROOT_DIR, test_list)
+
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-"""
-for it, train_data in enumerate(train_loader):
-    print("Test\n")
-    print(train_data)
-    print("The first index is ",train_data['images'][0])
-    print("classifications are ",train_data['label'])
-    print(train_data['images'][0].shape)
-"""
+test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True)
+
 training_data = train_loader
-# test_data = ...
+test_data = test_loader
 
 
+# ================== Define Model =========================================
 model = Network(input_size, data_shape, output_dimension).to(args.device)
 
 loss_function = nn.CrossEntropyLoss()
