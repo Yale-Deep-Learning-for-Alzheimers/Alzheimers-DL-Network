@@ -1,6 +1,7 @@
 """ Unified home for training and evaluation. Imports model and dataloader."""
 
 import time
+from __future__ import print_function
 import math
 import torch
 import torch.nn as nn
@@ -70,13 +71,13 @@ data_shape = (200,200,150)
 MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
 random.shuffle(MRI_images_list)
 # NOTE: simply for testing out the data loader, take the first three images from the list
-MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
+# MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
                                       # root dir should be './data_sample/'
 # print(MRI_images_list)
 
 # ========== TODO: Use DataLoader to Create Train/Test Split ==============
 
-DATA_ROOT_DIR = './data_sample'
+DATA_ROOT_DIR = './'
 train_dataset = MRIData(DATA_ROOT_DIR, MRI_images_list)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 """
@@ -108,7 +109,7 @@ def train(model,training_data,optimizer,criterion):
     epoch_length = len(training_data)
 
     for i, patient_data in enumerate(training_data):
-        if i%(math.floor(epoch_length/5)+1)==0: print(f"\t\tTraining:{i/epoch_length*100}%")
+        if i%(math.floor(epoch_length/5)+1)==0: print("\t\tTesting Progress:",i/epoch_length*100)
         # Clear gradients
         model.zero_grad()
         # clear the LSTM hidden state after each patient
@@ -154,7 +155,7 @@ def test(model, test_data, criterion):
     epoch_loss = 0
     epoch_length = len(test_data)
     for i, patient_data in enumerate(test_data):
-        if i%(math.floor(epoch_length/5)+1)==0: print(f"\t\tTesting Progress:{i/epoch_length*100}%")
+        if i%(math.floor(epoch_length/5)+1)==0: print("\t\tTesting Progress:",i/epoch_length*100)
         # Clear gradients
         model.zero_grad()
         # clear the LSTM hidden state after each patient
@@ -206,9 +207,12 @@ for epoch in range(training_epochs):
     epoch_mins = math.floor((end_time-start_time)/60)
     epoch_secs = math.floor((end_time-start_time)%60)
 
-    print(f"Hurrah! Epoch {epoch + 1}/{training_epochs} concludes. | Time: {epoch_mins}m {epoch_secs}s")
-    print(f"\tTrain Loss: {train_loss:.3f}| Train Perplexity: {math.exp(train_loss):7.3f}")
-    print(f"\tTest Loss: {test_loss:.3f}| Test Perplexity: {math.exp(test_loss):7.3f}")
+    print("Hurrah! Epoch",epoch + 1," concludes. Time:",epoch_mins)
+    print("\tTrain Loss: ",train_loss)
+    # print(f"Hurrah! Epoch {epoch + 1}/{training_epochs} concludes. | Time: {epoch_mins}m {epoch_secs}s")
+    # print(f"\tTrain Loss: {train_loss:.3f}| Train Perplexity: {math.exp(train_loss):7.3f}")
+    # print(f"\tTest Loss: {test_loss:.3f}| Test Perplexity: {math.exp(test_loss):7.3f}")
+
 
     if test_loss<best_test_accuracy:
         print("...that was our best test accuracy yet!")
