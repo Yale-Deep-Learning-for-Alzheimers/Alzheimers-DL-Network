@@ -24,8 +24,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="37" selection-start-line="3" selection-start-column="37" selection-end-line="3" selection-end-column="37" />
+            <state relative-caret-position="15">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
+              <folding>
+                <element signature="e#81#118#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -189,7 +192,7 @@
       <workItem from="1588169061163" duration="34000" />
       <workItem from="1588170125940" duration="1158000" />
       <workItem from="1588285370757" duration="22516000" />
-      <workItem from="1588598556705" duration="7557000" />
+      <workItem from="1588598556705" duration="7736000" />
     </task>
     <task id="LOCAL-00001" summary="Added hidden files, on the insistence of my compiler.">
       <created>1588170486876</created>
@@ -244,7 +247,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31265000" />
+    <option name="totallyTimeSpent" value="31444000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -338,8 +341,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/evaluate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="37" selection-start-line="3" selection-start-column="37" selection-end-line="3" selection-end-column="37" />
+        <state relative-caret-position="15">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+          <folding>
+            <element signature="e#81#118#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
