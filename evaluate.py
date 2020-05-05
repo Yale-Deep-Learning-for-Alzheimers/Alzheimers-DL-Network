@@ -17,6 +17,21 @@ import sys
 sys.path.insert(1, './model')
 from network import Network
 from data_loader import MRIData
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Train and validate network.')
+parser.add_argument('--disable-cuda', action='store_true', default="True",
+                    help='Disable CUDA')
+args = parser.parse_args()
+args.device = None
+
+if not args.disable_cuda and torch.cuda.is_available():
+    args.device = torch.device('cuda')
+    print("Using CUDA. : )")
+else:
+    args.device = torch.device('cpu')
+
 # torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
 # NOTE: don't change the seed numbers as we debug --- the specific files in data_sample are dependent on these seeds
 torch.manual_seed(1)
@@ -37,7 +52,7 @@ output_dimension = 4 # the number of predictions the model will make
 learning_rate = 0.1
 training_epochs = 10
 # The size of images passed, as a tuple
-data_shape = (192,192,160)
+data_shape = (200,200,150)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
 
@@ -73,10 +88,10 @@ for it, train_data in enumerate(train_loader):
     print(train_data['images'][0].shape)
 """
 training_data = train_loader
-test_data = ...
+# test_data = ...
 
 
-model = Network(input_size, data_shape, output_dimension)
+model = Network(input_size, data_shape, output_dimension).to(args.device)
 
 loss_function = nn.CrossEntropyLoss()
 
@@ -102,6 +117,8 @@ def train(model,training_data,optimizer,criterion):
 
         #get the MRI's and classifications for the current patient
         patient_MRI = patient_data["images"]
+        patient_MRI = patient_MRI.to(device=args.device)
+        # print(patient_MRI.shape)
         patient_classifications = patient_data["label"]
         # print("patient classes ", patient_classifications)
         patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
@@ -145,6 +162,7 @@ def test(model, test_data, criterion):
 
         # get the MRI's and classifications for the current patient
         patient_MRI = patient_data["images"]
+        patient_MRI = patient_MRI.to(device=args.device)
         patient_classifications = patient_data["label"]
         # print("patient classes ", patient_classifications)
         patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
@@ -181,17 +199,20 @@ for epoch in range(training_epochs):
     start_time = time.time()
 
     train_loss = train(model, training_data, optimizer, loss_function)
-    test_loss = test(model, test_data, loss_function)
+    test_loss = 0 #test(model, test_data, loss_function)
 
     end_time = time.time()
 
     epoch_mins = math.floor((end_time-start_time)/60)
     epoch_secs = math.floor((end_time-start_time)%60)
 
+    print(f"Hurrah! Epoch {epoch + 1}/{training_epochs} concludes. | Time: {epoch_mins}m {epoch_secs}s")
+    print(f"\tTrain Loss: {train_loss:.3f}| Train Perplexity: {math.exp(train_loss):7.3f}")
+    print(f"\tTest Loss: {test_loss:.3f}| Test Perplexity: {math.exp(test_loss):7.3f}")
+
     if test_loss<best_test_accuracy:
+        print("...that was our best test accuracy yet!")
         best_test_accuracy=test_loss
         torch.save(model.state_dict(),'ad-model.pt')
 
-    print(f"Hurrah! Epoch {epoch+1}/{training_epochs} concludes. | Time: {epoch_mins}m {epoch_secs}s")
-    print(f"\tTrain Loss: {train_loss:.3f}| Train Perplexity: {math.exp(train_loss):7.3f}")
-    print(f"\tTest Loss: {test_loss:.3f}| Test Perplexity: {math.exp(test_loss):7.3f}")
+
