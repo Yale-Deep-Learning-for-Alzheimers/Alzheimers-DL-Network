@@ -15,8 +15,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Google Drive (kincaid.macdonald@yale.edu)/ADNI/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="379">
-              <caret line="125" selection-start-line="125" selection-end-line="125" />
+            <state relative-caret-position="574">
+              <caret line="126" selection-start-line="126" selection-end-line="126" />
             </state>
           </provider>
         </entry>
@@ -24,10 +24,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            <state relative-caret-position="154">
+              <caret line="113" column="56" lean-forward="true" selection-start-line="113" selection-start-column="56" selection-end-line="113" selection-end-column="56" />
               <folding>
-                <element signature="e#81#118#0" expanded="true" />
+                <element signature="e#80#91#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -192,7 +192,7 @@
       <workItem from="1588169061163" duration="34000" />
       <workItem from="1588170125940" duration="1158000" />
       <workItem from="1588285370757" duration="22516000" />
-      <workItem from="1588598556705" duration="7736000" />
+      <workItem from="1588598556705" duration="8331000" />
     </task>
     <task id="LOCAL-00001" summary="Added hidden files, on the insistence of my compiler.">
       <created>1588170486876</created>
@@ -243,11 +243,18 @@
       <option name="project" value="LOCAL" />
       <updated>1588640429090</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="moved __future__ to beginning of file">
+      <created>1588650115349</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1588650115349</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31444000" />
+    <option name="totallyTimeSpent" value="32039000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -299,7 +306,8 @@
     <MESSAGE value="Implemented diagnosis and predication with Cross Entropy loss. &#10;Model now runs with sample data." />
     <MESSAGE value="Train and test functions finished, now with hidden state flushing. All we need is data!" />
     <MESSAGE value="Added support for CUDA." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added support for CUDA." />
+    <MESSAGE value="moved __future__ to beginning of file" />
+    <option name="LAST_COMMIT_MESSAGE" value="moved __future__ to beginning of file" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Alzheimers_DL_Network$Alzheimer_s_DL.coverage" NAME="Alzheimer's DL Coverage Results" MODIFIED="1588649870052" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -334,17 +342,17 @@
     </entry>
     <entry file="file://$USER_HOME$/Google Drive (kincaid.macdonald@yale.edu)/ADNI/evaluate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="125" selection-start-line="125" selection-end-line="125" />
+        <state relative-caret-position="574">
+          <caret line="126" selection-start-line="126" selection-end-line="126" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/evaluate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        <state relative-caret-position="154">
+          <caret line="113" column="56" lean-forward="true" selection-start-line="113" selection-start-column="56" selection-end-line="113" selection-end-column="56" />
           <folding>
-            <element signature="e#81#118#0" expanded="true" />
+            <element signature="e#80#91#0" expanded="true" />
           </folding>
         </state>
       </provider>
