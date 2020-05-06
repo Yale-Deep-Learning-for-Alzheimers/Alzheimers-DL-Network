@@ -22,15 +22,16 @@ import argparse
 
 
 parser = argparse.ArgumentParser(description='Train and validate network.')
-parser.add_argument('--disable-cuda', action='store_true', default="True",
+parser.add_argument('--disable-cuda', action='store_true', default=False,
                     help='Disable CUDA')
 args = parser.parse_args()
 args.device = None
-
+print(args.disable_cuda)
 if not args.disable_cuda and torch.cuda.is_available():
     args.device = torch.device('cuda')
     print("Using CUDA. : )")
 else:
+    print("We aren't using CUDA.")
     args.device = torch.device('cpu')
 
 # torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
