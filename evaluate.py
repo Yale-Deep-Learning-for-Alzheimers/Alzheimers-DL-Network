@@ -38,7 +38,7 @@ torch.manual_seed(1)
 random.seed(1)
 
 # ============= Hyperparameters ===================
-BATCH_SIZE = 64
+BATCH_SIZE = 10 # FIXME: used to be 64
 # Dimensionality of the data outputted by the LSTM,
 # forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 LSTM_output_size = 16
@@ -74,7 +74,7 @@ random.shuffle(MRI_images_list)
                                       # root dir should be './data_sample/'
 # print(MRI_images_list)
 # NOTE: For testing on Farnam cluster
-MRI_images_list = MRI_images_list[:20]
+MRI_images_list = MRI_images_list[:10]
 
 # ========== TODO: Use DataLoader to Create Train/Test Split ==============
 
