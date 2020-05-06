@@ -42,7 +42,7 @@ BATCH_SIZE = 64
 # Dimensionality of the data outputted by the LSTM,
 # forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 LSTM_output_size = 16
-input_size = 3 # Size of the processed MRI scans fed into the CNN.
+input_size = 10 # FIXME: used to be 3 # Size of the processed MRI scans fed into the CNN.
 
 output_dimension = 4 # the number of predictions the model will make
 # 2 are converted into a binary diagnosis, two are used for prediction
@@ -73,6 +73,8 @@ random.shuffle(MRI_images_list)
 # MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
                                       # root dir should be './data_sample/'
 # print(MRI_images_list)
+# NOTE: For testing on Farnam cluster
+MRI_images_list = MRI_images_list[:20]
 
 # ========== TODO: Use DataLoader to Create Train/Test Split ==============
 
