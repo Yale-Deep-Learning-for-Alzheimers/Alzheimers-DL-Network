@@ -43,11 +43,10 @@ BATCH_SIZE = 64
 # Dimensionality of the data outputted by the LSTM,
 # forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 LSTM_output_size = 16
-input_size = 10 # FIXME: used to be 3 # Size of the processed MRI scans fed into the CNN.
+input_size = 1 # FIXME: used to be 3 # Size of the processed MRI scans fed into the CNN.
 
-output_dimension = 4 # the number of predictions the model will make
-# 2 are converted into a binary diagnosis, two are used for prediction
-# NOTE: The training architecture currently assumes 4. If you change output-dimension,
+output_dimension = 2 # the number of predictions the model will make
+# 2 used for binary prediction for each image.
 # update the splicing used in train()
 
 learning_rate = 0.1
@@ -81,7 +80,7 @@ random.shuffle(MRI_images_list)
                                       # root dir should be './data_sample/'
 # print(MRI_images_list)
 # NOTE: For testing on Farnam cluster
-MRI_images_list = MRI_images_list[:20]
+MRI_images_list = MRI_images_list[:4]
 # >>>>>>> 4da380244e90113833ad6d03e0483fe38046367c
 
 # How much of the data will be reserved for testing?
@@ -120,45 +119,38 @@ def train(model,training_data,optimizer,criterion):
     # initialize the per epoch loss
     epoch_loss = 0
     epoch_length = len(training_data)
-
     for i, patient_data in enumerate(training_data):
-        if i%(math.floor(epoch_length/5)+1)==0: print(f"\t\tTesting Progress:{i/epoch_length*100}%")
+        if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTesting Progress:{i / epoch_length * 100}%")
         # Clear gradients
         model.zero_grad()
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
-        print("Patient data is ",patient_data)
+        print("Patient data is ",patient_data, "with shape",patient_data['images'].shape)
         #get the MRI's and classifications for the current patient
-        patient_MRI = patient_data["images"]
-        patient_MRI = patient_MRI.to(device=args.device)
+        patient_markers = patient_data['num_images']
+        patient_MRIs = patient_data["images"]
+        # patient_MRI = patient_MRI.to(device=args.device)
         # print(patient_MRI.shape)
         patient_classifications = patient_data["label"]
-        # print("patient classes ", patient_classifications)
-        patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
-        patient_endstate = patient_endstate.long()
+        for x in range(len(patient_MRIs)):
+            # clear hidden states to give each patient a clean slate
+            model.hidden = model.init_hidden()
+            single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1,1,data_shape[0],data_shape[1],data_shape[2])
+            print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
+            patient_diagnosis = patient_classifications[x]
+            patient_endstate = torch.ones(len(single_patient_MRIs)) * patient_diagnosis
+            patient_endstate = patient_endstate.long()
 
-        # print("The number of input channels appears to be", patient_MRI.shape)
+            out = model(single_patient_MRIs)
 
-        # produce prediction for current MRI scan, and append to predictions array
-        out = model(patient_MRI)
-        # print("model gives ",out)
-        #loss = criterion(out,patient_super)
+            model_predictions = out
 
-        # loss from model diagnoses
-        model_diagnoses = out[:,:2]
-        # print("model diagnosis is ",model_diagnoses)# extract the first two columns of the output, which we train classify the MRIs
-        # Compute loss with respect to
-        loss = criterion(model_diagnoses, patient_classifications)
-
-        # for model prediction and classification
-        model_predictions = out[:,2:] # extract the second two columns of the output
-        # print("model predictions are ",model_predictions)
-        loss += criterion(model_predictions, patient_endstate)
-
-        epoch_loss += loss.item()
-        loss.backward()
-        optimizer.step()
+            # print("model predictions are ",model_predictions)
+            loss = criterion(model_predictions, patient_endstate)
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss
 
     return epoch_loss/len(training_data)
 
@@ -166,47 +158,41 @@ def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
     model.eval()
     epoch_loss = 0
-    epoch_length = len(test_data)
-    for i, patient_data in enumerate(test_data):
-        if i%(math.floor(epoch_length/5)+1)==0: print(f"\t\tTesting Progress:{i/epoch_length*100}%")
+    epoch_length = len(training_data)
+    for i, patient_data in enumerate(training_data):
+        if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTesting Progress:{i / epoch_length * 100}%")
         # Clear gradients
         model.zero_grad()
+        batch_loss = torch.tensor(0)
         # clear the LSTM hidden state after each patient
+        # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
-
-
+        print("Patient data is ", patient_data, "with shape", patient_data['images'].shape)
         # get the MRI's and classifications for the current patient
-        nonzero = patient_data["num_images"] # the number of images before padding starts
-        patient_MRI = patient_data["images"][:nonzero] # extract actual MRI
-        patient_classifications = patient_data["label"][:nonzero] # and classifications
+        patient_markers = patient_data['num_images']
+        patient_MRIs = patient_data["images"]
+        # patient_MRI = patient_MRI.to(device=args.device)
+        # print(patient_MRI.shape)
+        patient_classifications = patient_data["label"]
+        for x in range(len(patient_MRIs)):
+            # clear hidden states to give each patient a clean slate
+            model.hidden = model.init_hidden()
+            single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1, 1, data_shape[0], data_shape[1],
+                                                                            data_shape[2])
+            print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
+            patient_diagnosis = patient_classifications[x]
+            patient_endstate = torch.ones(len(single_patient_MRIs)) * patient_diagnosis
+            patient_endstate = patient_endstate.long()
 
-        patient_MRI = patient_MRI.to(device=args.device) # send to CUDA, if it exists.
+            out = model(single_patient_MRIs)
 
-        # print("patient classes ", patient_classifications)
-        patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
-        patient_endstate = patient_endstate.long()
+            model_predictions = out
 
-        # print("The number of input channels appears to be", patient_MRI.shape)
+            # print("model predictions are ",model_predictions)
+            loss = criterion(model_predictions, patient_endstate)
+            epoch_loss += loss
 
-        # produce prediction for current MRI scan, and append to predictions array
-        out = model(patient_MRI)
-        # print("model gives ",out)
-        # loss = criterion(out,patient_super)
-
-        # loss from model diagnoses
-        model_diagnoses = out[:, :2]
-        # print("model diagnosis is ",model_diagnoses)# extract the first two columns of the output, which we train classify the MRIs
-        # Compute loss with respect to
-        loss = criterion(model_diagnoses, patient_classifications)
-
-        # for model prediction and classification
-        model_predictions = out[:, 2:]  # extract the second two columns of the output
-        # print("model predictions are ",model_predictions)
-        loss += criterion(model_predictions, patient_endstate)
-
-        epoch_loss += loss.item()
-
-    return epoch_loss/len(test_data)
+    return epoch_loss / len(training_data)
 
 # perform training and measure test accuracy. Save best performing model.
 best_test_accuracy = float('inf')

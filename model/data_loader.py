@@ -83,6 +83,7 @@ class MRIData(Dataset):
             images_list.append(image_data_tensor)
         
         # Add padding to make all final tensors the same size
+        num_images = len(images_list)
         while (len(images_list) < MAX_NUM_IMAGES):
             padding_array = np.zeros((STANDARD_DIM1, STANDARD_DIM2, STANDARD_DIM3))
             padding_tensor = torch.Tensor(padding_array)
@@ -92,10 +93,10 @@ class MRIData(Dataset):
             print("Error: More than 10 images for one individual patient. Update MAX_NUM_IMAGES in data_loader.py")
 
         # Convert the list of individual image tensors to a tensor itself
-        images_tensor = torch.stack(images_list)
+        images_tensor = torch.stack(images_list,dim=0)
 
         # Return a dictionary with the images tensor and the label
-        image_dict = {'images': images_tensor, 'label': patient_label}
+        image_dict = {'images': images_tensor, 'label': patient_label, 'num_images':num_images}
         # NOTE: alternative approach is to just have the classification be the first element in the images_tensor
 
         return image_dict
