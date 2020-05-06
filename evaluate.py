@@ -79,8 +79,6 @@ random.shuffle(MRI_images_list)
 # How much of the data will be reserved for testing?
 train_size = int(0.7 * len(MRI_images_list))
 
-# MRI_images_list = MRI_images_list[:10]
-
 # Split list
 training_list = MRI_images_list[:train_size]
 test_list =  MRI_images_list[train_size:]
@@ -133,7 +131,11 @@ def train(model,training_data,optimizer,criterion):
             model.hidden = model.init_hidden()
             single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1,1,data_shape[0],data_shape[1],data_shape[2])
             # print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
+            single_patient_MRIs = single_patient_MRIs.to(args.device)
+
             patient_diagnosis = patient_classifications[x]
+            # print("patient diagnosis is ",patient_diagnosis)
+            # print("single_patient_MRI size 0 gives ",single_patient_MRIs.size(0))
             patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
             patient_endstate = patient_endstate.long()
 
@@ -174,6 +176,7 @@ def test(model, test_data, criterion):
             model.hidden = model.init_hidden()
             single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1, 1, data_shape[0], data_shape[1],
                                                                             data_shape[2])
+            single_patient_MRIs = single_patient_MRIs.to(args.device)
             # print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
             patient_diagnosis = patient_classifications[x]
             patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
