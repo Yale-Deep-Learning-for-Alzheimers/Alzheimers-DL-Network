@@ -52,7 +52,7 @@ output_dimension = 2 # the number of predictions the model will make
 # update the splicing used in train()
 
 learning_rate = 0.1
-training_epochs = 10
+training_epochs = 5
 # The size of images passed, as a tuple
 data_shape = (200,200,150)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
@@ -114,7 +114,7 @@ def train(model,training_data,optimizer,criterion):
     epoch_loss = 0
     epoch_length = len(training_data)
     for i, patient_data in enumerate(training_data):
-        if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTesting Progress:{i / epoch_length * 100}%")
+        if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTraining Progress:{i / len(training_data) * 100}%")
         # Clear gradients
         model.zero_grad()
         # clear the LSTM hidden state after each patient
@@ -162,15 +162,17 @@ def train(model,training_data,optimizer,criterion):
                 epoch_length -= 1
                 print("EXCEPTION CAUGHT:", sys.exc_info()[0])
 
+    if epoch_length == 0: epoch_length = 0.000001
+
     return epoch_loss/epoch_length
 
 def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
     model.eval()
     epoch_loss = 0
-    epoch_length = len(training_data)
-    for i, patient_data in enumerate(training_data):
-        if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTesting Progress:{i / epoch_length * 100}%")
+    epoch_length = len(test_data)
+    for i, patient_data in enumerate(test_data):
+        if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTesting Progress:{i / len(test_data) * 100}%")
         # Clear gradients
         model.zero_grad()
         batch_loss = torch.tensor(0)
@@ -214,6 +216,7 @@ def test(model, test_data, criterion):
                 epoch_length -= 1
                 print("EXCEPTION CAUGHT:", sys.exc_info()[0])
 
+    if epoch_length == 0: epoch_length = 0.000001
     return epoch_loss / epoch_length
 
 # perform training and measure test accuracy. Save best performing model.

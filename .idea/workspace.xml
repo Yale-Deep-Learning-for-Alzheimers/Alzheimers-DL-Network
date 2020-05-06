@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d68fe6fe-896d-48f5-b85f-610e17fd55fa" name="Default Changelist" comment="">
+    <list default="true" id="d68fe6fe-896d-48f5-b85f-610e17fd55fa" name="Default Changelist" comment="Reverted to python3 : )">
       <change beforePath="$PROJECT_DIR$/evaluate.py" beforeDir="false" afterPath="$PROJECT_DIR$/evaluate.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="10" lean-forward="true" selection-start-line="16" selection-start-column="10" selection-end-line="16" selection-end-column="10" />
+            <state relative-caret-position="265">
+              <caret line="146" lean-forward="true" selection-start-line="146" selection-end-line="146" />
               <folding>
                 <element signature="e#80#91#0" expanded="true" />
               </folding>
@@ -248,7 +248,7 @@
       <workItem from="1588170125940" duration="1158000" />
       <workItem from="1588285370757" duration="22516000" />
       <workItem from="1588598556705" duration="9006000" />
-      <workItem from="1588699516841" duration="18686000" />
+      <workItem from="1588699516841" duration="19357000" />
     </task>
     <task id="LOCAL-00001" summary="Added hidden files, on the insistence of my compiler.">
       <created>1588170486876</created>
@@ -317,7 +317,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="51400000" />
+    <option name="totallyTimeSpent" value="52071000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -416,8 +416,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/evaluate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="10" lean-forward="true" selection-start-line="16" selection-start-column="10" selection-end-line="16" selection-end-column="10" />
+        <state relative-caret-position="265">
+          <caret line="146" lean-forward="true" selection-start-line="146" selection-end-line="146" />
           <folding>
             <element signature="e#80#91#0" expanded="true" />
           </folding>
