@@ -157,10 +157,10 @@ def train(model,training_data,optimizer,criterion):
                 loss.backward()
                 optimizer.step()
                 epoch_loss += loss
-            except Exception as e:
+            except Exception:
                 epoch_loss += 0
                 epoch_length -= 1
-                print("EXCEPTION CAUGHT:",e.message)
+                print("EXCEPTION CAUGHT:", sys.exc_info()[0])
 
     return epoch_loss/epoch_length
 
@@ -209,10 +209,10 @@ def test(model, test_data, criterion):
                 loss = criterion(model_predictions, patient_endstate)
                 epoch_loss += loss
                 print("Current Model loss ",loss)
-            except Exception as e:
+            except Exception:
                 epoch_loss += 0
                 epoch_length -= 1
-                print("EXCEPTION CAUGHT:", e.message)
+                print("EXCEPTION CAUGHT:", sys.exc_info()[0])
 
     return epoch_loss / epoch_length
 
