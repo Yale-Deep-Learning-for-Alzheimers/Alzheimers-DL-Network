@@ -118,14 +118,14 @@ def train(model,training_data,optimizer,criterion):
         # Clear gradients
         model.zero_grad()
         torch.cuda.empty_cache() # clear cuda memory
-        batch_loss=torch.tensor(0.0).to(args.device)
+        batch_loss=torch.tensor(0.0).to(args.device,dtype=torch.half)
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
         # print("Patient data is ",patient_data, "with shape",patient_data['images'].shape)
         #get the MRI's and classifications for the current patient
         patient_markers = patient_data['num_images']
-        patient_MRIs = patient_data["images"].to(args.device)
+        patient_MRIs = patient_data["images"].to(args.device,dtype=torch.half)
         # patient_MRI = patient_MRI.to(device=args.device)
         # print(patient_MRI.shape)
 
@@ -187,7 +187,7 @@ def test(model, test_data, criterion):
         # print("Patient data is ", patient_data, "with shape", patient_data['images'].shape)
         # get the MRI's and classifications for the current patient
         patient_markers = patient_data['num_images']
-        patient_MRIs = patient_data["images"].to(args.device)
+        patient_MRIs = patient_data["images"].to(args.device,dtype=torch.half)
         # patient_MRI = patient_MRI.to(device=args.device)
         # print(patient_MRI.shape)
 
@@ -199,7 +199,6 @@ def test(model, test_data, criterion):
                 model.hidden = model.init_hidden()
                 single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1, 1, data_shape[0], data_shape[1],
                                                                                 data_shape[2])
-                single_patient_MRIs = single_patient_MRIs
                 # print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
                 patient_diagnosis = patient_classifications[x]
                 patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
