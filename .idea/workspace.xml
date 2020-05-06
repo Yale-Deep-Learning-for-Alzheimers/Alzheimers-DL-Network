@@ -24,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="265">
-              <caret line="146" lean-forward="true" selection-start-line="146" selection-end-line="146" />
+            <state relative-caret-position="362">
+              <caret line="167" column="49" lean-forward="true" selection-start-line="167" selection-start-column="49" selection-end-line="167" selection-end-column="49" />
               <folding>
                 <element signature="e#80#91#0" expanded="true" />
               </folding>
@@ -248,7 +248,7 @@
       <workItem from="1588170125940" duration="1158000" />
       <workItem from="1588285370757" duration="22516000" />
       <workItem from="1588598556705" duration="9006000" />
-      <workItem from="1588699516841" duration="19357000" />
+      <workItem from="1588699516841" duration="20450000" />
     </task>
     <task id="LOCAL-00001" summary="Added hidden files, on the insistence of my compiler.">
       <created>1588170486876</created>
@@ -317,7 +317,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52071000" />
+    <option name="totallyTimeSpent" value="53164000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -377,9 +377,6 @@
     <SUITE FILE_PATH="coverage/Alzheimers_DL_Network$Alzheimer_s_DL.coverage" NAME="Alzheimer's DL Coverage Results" MODIFIED="1588702353164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Google Drive (kincaid.macdonald@yale.edu)/ADNI/model/network.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$USER_HOME$/Desktop/MacDonaldK-Assignment4/rnn.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="112">
@@ -414,10 +411,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Google Drive (kincaid.macdonald@yale.edu)/ADNI/model/network.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/evaluate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="265">
-          <caret line="146" lean-forward="true" selection-start-line="146" selection-end-line="146" />
+        <state relative-caret-position="362">
+          <caret line="167" column="49" lean-forward="true" selection-start-line="167" selection-start-column="49" selection-end-line="167" selection-end-column="49" />
           <folding>
             <element signature="e#80#91#0" expanded="true" />
           </folding>

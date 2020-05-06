@@ -117,6 +117,7 @@ def train(model,training_data,optimizer,criterion):
         if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTraining Progress:{i / len(training_data) * 100}%")
         # Clear gradients
         model.zero_grad()
+        batch_loss=torch.tensor(0)
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
@@ -154,17 +155,22 @@ def train(model,training_data,optimizer,criterion):
 
                 # print("model predictions are ",model_predictions)
                 loss = criterion(model_predictions, patient_endstate)
-                loss.backward()
-                optimizer.step()
-                epoch_loss += loss
+                batch_loss += loss
+
+            batch_loss.backward()
+            print("batch loss is",batch_loss)
+            optimizer.step()
+            epoch_loss += batch_loss
             except Exception:
                 epoch_loss += 0
                 epoch_length -= 1
                 print("EXCEPTION CAUGHT:", sys.exc_info()[0])
-
     if epoch_length == 0: epoch_length = 0.000001
+    return epoch_loss / epoch_length
 
-    return epoch_loss/epoch_length
+
+
+
 
 def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
@@ -210,7 +216,7 @@ def test(model, test_data, criterion):
                 # print("model predictions are ",model_predictions)
                 loss = criterion(model_predictions, patient_endstate)
                 epoch_loss += loss
-                print("Current Model loss ",loss)
+                print("Current test loss ",loss)
             except Exception:
                 epoch_loss += 0
                 epoch_length -= 1
