@@ -29,6 +29,7 @@ args.device = None
 print(args.disable_cuda)
 if torch.cuda.is_available():
     print("Using CUDA. : )")
+    torch.set_default_tensor_type('torch.cuda.FloatTensor')
     args.device = torch.device('cuda')
 else:
     print("We aren't using CUDA.")
@@ -70,8 +71,7 @@ data_shape = (200,200,150)
 MRI_images_list = pickle.load(open("./Data/Combined_MRI_List.pkl", "rb"))
 random.shuffle(MRI_images_list)
 # NOTE: simply for testing out the data loader, take the first three images from the list
-# MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
-                                      # root dir should be './data_sample/'
+
 # print(MRI_images_list)
 # NOTE: For testing on Farnam cluster
 # MRI_images_list = MRI_images_list[:4]
@@ -138,7 +138,7 @@ def train(model,training_data,optimizer,criterion):
             # print("patient diagnosis is ",patient_diagnosis)
             # print("single_patient_MRI size 0 gives ",single_patient_MRIs.size(0))
             patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
-            patient_endstate = patient_endstate.long()
+            patient_endstate = patient_endstate.long().to(args.device)
 
             out = model(single_patient_MRIs)
 
@@ -186,7 +186,7 @@ def test(model, test_data, criterion):
             # print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
             patient_diagnosis = patient_classifications[x]
             patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
-            patient_endstate = patient_endstate.long()
+            patient_endstate = patient_endstate.long().to(args.device)
 
             out = model(single_patient_MRIs)
 
