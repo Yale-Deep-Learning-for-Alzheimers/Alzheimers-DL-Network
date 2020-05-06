@@ -67,7 +67,6 @@ class Network(nn.Module):
         padding = 0
 
 
-
         # The input and output
         self.convolution1 = nn.Conv3d(input_channels, 20,kernel_size,padding=padding) #TODO: Optimize ALL of these when Data Size is known
         current_shape = dimensions_after_convolution(kernel_size,1,padding,input_shape)

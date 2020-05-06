@@ -15,17 +15,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Google Drive (kincaid.macdonald@yale.edu)/ADNI/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="883">
-              <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
+            <state relative-caret-position="763">
+              <caret line="114" column="36" selection-start-line="114" selection-start-column="36" selection-end-line="114" selection-end-column="36" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1433">
-              <caret line="213" lean-forward="true" selection-start-line="213" selection-end-line="213" />
+            <state relative-caret-position="194">
+              <caret line="138" column="75" lean-forward="true" selection-start-line="138" selection-start-column="75" selection-end-line="138" selection-end-column="75" />
               <folding>
                 <element signature="e#80#91#0" expanded="true" />
               </folding>
@@ -33,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="70" column="30" lean-forward="true" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
+            <state relative-caret-position="212">
+              <caret line="71" column="24" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
               <folding>
                 <element signature="e#153#165#0" expanded="true" />
               </folding>
@@ -48,8 +48,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/data_loader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="159">
-              <caret line="25" column="40" lean-forward="true" selection-start-line="25" selection-start-column="40" selection-end-line="25" selection-end-column="40" />
+            <state relative-caret-position="118">
+              <caret line="60" column="28" lean-forward="true" selection-start-line="60" selection-start-column="28" selection-end-line="60" selection-end-column="28" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -73,8 +73,8 @@
       <list>
         <option value="$USER_HOME$/Desktop/MacDonaldK-Assignment4/rnn.py" />
         <option value="$PROJECT_DIR$/model/data_loader.py" />
-        <option value="$PROJECT_DIR$/evaluate.py" />
         <option value="$PROJECT_DIR$/model/network.py" />
+        <option value="$PROJECT_DIR$/evaluate.py" />
       </list>
     </option>
   </component>
@@ -248,7 +248,7 @@
       <workItem from="1588170125940" duration="1158000" />
       <workItem from="1588285370757" duration="22516000" />
       <workItem from="1588598556705" duration="9006000" />
-      <workItem from="1588699516841" duration="15495000" />
+      <workItem from="1588699516841" duration="16178000" />
     </task>
     <task id="LOCAL-00001" summary="Added hidden files, on the insistence of my compiler.">
       <created>1588170486876</created>
@@ -317,7 +317,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48209000" />
+    <option name="totallyTimeSpent" value="48892000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -387,39 +387,39 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Google Drive (kincaid.macdonald@yale.edu)/ADNI/evaluate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="763">
+          <caret line="114" column="36" selection-start-line="114" selection-start-column="36" selection-end-line="114" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="71" column="24" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
+          <folding>
+            <element signature="e#153#165#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/model/data_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="25" column="40" lean-forward="true" selection-start-line="25" selection-start-column="40" selection-end-line="25" selection-end-column="40" />
+        <state relative-caret-position="118">
+          <caret line="60" column="28" lean-forward="true" selection-start-line="60" selection-start-column="28" selection-end-line="60" selection-end-column="28" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Google Drive (kincaid.macdonald@yale.edu)/ADNI/evaluate.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="883">
-          <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/evaluate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1433">
-          <caret line="213" lean-forward="true" selection-start-line="213" selection-end-line="213" />
+        <state relative-caret-position="194">
+          <caret line="138" column="75" lean-forward="true" selection-start-line="138" selection-start-column="75" selection-end-line="138" selection-end-column="75" />
           <folding>
             <element signature="e#80#91#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/network.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="70" column="30" lean-forward="true" selection-start-line="70" selection-start-column="30" selection-end-line="70" selection-end-column="30" />
-          <folding>
-            <element signature="e#153#165#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -122,11 +122,11 @@ def train(model,training_data,optimizer,criterion):
         model.hidden = model.init_hidden()
         # print("Patient data is ",patient_data, "with shape",patient_data['images'].shape)
         #get the MRI's and classifications for the current patient
-        patient_markers = patient_data['num_images'].to(args.device)
+        patient_markers = patient_data['num_images']
         patient_MRIs = patient_data["images"].to(args.device)
         # patient_MRI = patient_MRI.to(device=args.device)
         # print(patient_MRI.shape)
-        patient_classifications = patient_data["label"].to(args.device)
+        patient_classifications = patient_data["label"]
         for x in range(len(patient_MRIs)):
             # clear hidden states to give each patient a clean slate
             model.hidden = model.init_hidden()
@@ -172,11 +172,11 @@ def test(model, test_data, criterion):
         model.hidden = model.init_hidden()
         # print("Patient data is ", patient_data, "with shape", patient_data['images'].shape)
         # get the MRI's and classifications for the current patient
-        patient_markers = patient_data['num_images'].to(args.device)
+        patient_markers = patient_data['num_images']
         patient_MRIs = patient_data["images"].to(args.device)
         # patient_MRI = patient_MRI.to(device=args.device)
         # print(patient_MRI.shape)
-        patient_classifications = patient_data["label"].to(args.device)
+        patient_classifications = patient_data["label"]
         for x in range(len(patient_MRIs)):
             # clear hidden states to give each patient a clean slate
             model.hidden = model.init_hidden()
