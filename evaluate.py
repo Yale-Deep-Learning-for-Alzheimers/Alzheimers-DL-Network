@@ -86,7 +86,7 @@ MRI_images_list = MRI_images_list[:4]
 # How much of the data will be reserved for testing?
 train_size = int(0.7 * len(MRI_images_list))
 
-MRI_images_list = MRI_images_list[:10]
+# MRI_images_list = MRI_images_list[:10]
 
 # Split list
 training_list = MRI_images_list[:train_size]
@@ -128,7 +128,7 @@ def train(model,training_data,optimizer,criterion):
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
-        print("Patient data is ",patient_data, "with shape",patient_data['images'].shape)
+        # print("Patient data is ",patient_data, "with shape",patient_data['images'].shape)
         #get the MRI's and classifications for the current patient
         patient_markers = patient_data['num_images']
         patient_MRIs = patient_data["images"]
@@ -139,7 +139,7 @@ def train(model,training_data,optimizer,criterion):
             # clear hidden states to give each patient a clean slate
             model.hidden = model.init_hidden()
             single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1,1,data_shape[0],data_shape[1],data_shape[2])
-            print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
+            # print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
             patient_diagnosis = patient_classifications[x]
             patient_endstate = torch.ones(len(single_patient_MRIs)) * patient_diagnosis
             patient_endstate = patient_endstate.long()
@@ -169,7 +169,7 @@ def test(model, test_data, criterion):
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
-        print("Patient data is ", patient_data, "with shape", patient_data['images'].shape)
+        # print("Patient data is ", patient_data, "with shape", patient_data['images'].shape)
         # get the MRI's and classifications for the current patient
         patient_markers = patient_data['num_images']
         patient_MRIs = patient_data["images"]
@@ -181,7 +181,7 @@ def test(model, test_data, criterion):
             model.hidden = model.init_hidden()
             single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1, 1, data_shape[0], data_shape[1],
                                                                             data_shape[2])
-            print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
+            # print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
             patient_diagnosis = patient_classifications[x]
             patient_endstate = torch.ones(len(single_patient_MRIs)) * patient_diagnosis
             patient_endstate = patient_endstate.long()
