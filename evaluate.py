@@ -67,7 +67,7 @@ data_shape = (200,200,150)
 # the Classifications should be binary 0,1 probabilities in output_dimension dimensions. Perhaps something like this:
 # [chance_of_normality: 0 , chance of MCI: 0, chance of AD: 1]
 
-MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
+MRI_images_list = pickle.load(open("./Data/Combined_MRI_List.pkl", "rb"))
 random.shuffle(MRI_images_list)
 # NOTE: simply for testing out the data loader, take the first three images from the list
 # MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
