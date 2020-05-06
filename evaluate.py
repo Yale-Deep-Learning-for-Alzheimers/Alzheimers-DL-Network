@@ -43,7 +43,7 @@ BATCH_SIZE = 64
 # Dimensionality of the data outputted by the LSTM,
 # forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 LSTM_output_size = 16
-input_size = 3 # Size of the processed MRI scans fed into the CNN.
+input_size = 10 # FIXME: used to be 3 # Size of the processed MRI scans fed into the CNN.
 
 output_dimension = 4 # the number of predictions the model will make
 # 2 are converted into a binary diagnosis, two are used for prediction
@@ -56,10 +56,33 @@ training_epochs = 10
 data_shape = (200,200,150)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
+# <<<<<<< HEAD
 # =========== Data import ==============
 MRI_images_list = pickle.load(open("./data/Combined_MRI_List.pkl", "rb"))
 # >>>>>>> 7b5e6ff7a0ab6f2c469e74a1c70a84a7bda68b4a
 random.shuffle(MRI_images_list)
+# =======
+
+# ========== TODO: Import Data ==============
+# expected format:
+# training_data stores batches of MRI's and classifications like this: [batch,batch,batch] : )
+# each batch should be in form
+# [Bunch of MRIs, Bunch of Classifications]
+# and each 'bunch' in the batch should be grouped by patient
+# Bunch of MRIs = [Patient 1 MRIs, Patient 2 MRIs,...]
+# Bunch of Classifications = [Patient 1 classifications, Patient 2 Classifications...]
+# the Classifications should be binary 0,1 probabilities in output_dimension dimensions. Perhaps something like this:
+# [chance_of_normality: 0 , chance of MCI: 0, chance of AD: 1]
+
+MRI_images_list = pickle.load(open("./Data/Combined_MRI_List.pkl", "rb"))
+random.shuffle(MRI_images_list)
+# NOTE: simply for testing out the data loader, take the first three images from the list
+# MRI_images_list = MRI_images_list[:3] # these 3 are in data_sample folder
+                                      # root dir should be './data_sample/'
+# print(MRI_images_list)
+# NOTE: For testing on Farnam cluster
+MRI_images_list = MRI_images_list[:20]
+# >>>>>>> 4da380244e90113833ad6d03e0483fe38046367c
 
 # How much of the data will be reserved for testing?
 train_size = int(0.7 * len(MRI_images_list))

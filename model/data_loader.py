@@ -58,6 +58,7 @@ class MRIData(Dataset):
         images_list = []
         # The last element in the current patient's array is the classification
         patient_label = current_patient.pop()
+        print(patient_label)
         # For each image path, process the .nii image using nibabel
         for image_path in current_patient:
             print(image_path) #FIXME: delete this
