@@ -126,36 +126,43 @@ def train(model,training_data,optimizer,criterion):
         patient_MRIs = patient_data["images"].to(args.device)
         # patient_MRI = patient_MRI.to(device=args.device)
         # print(patient_MRI.shape)
+
         patient_classifications = patient_data["label"]
+        print("Patient batch classes ", patient_classifications)
         for x in range(len(patient_MRIs)):
-            # clear hidden states to give each patient a clean slate
-            model.hidden = model.init_hidden()
-            single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1,1,data_shape[0],data_shape[1],data_shape[2])
-            # print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
-            single_patient_MRIs = single_patient_MRIs.to(args.device)
+            try:
+                # clear hidden states to give each patient a clean slate
+                model.hidden = model.init_hidden()
+                single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1,1,data_shape[0],data_shape[1],data_shape[2])
+                # print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
+                single_patient_MRIs = single_patient_MRIs.to(args.device)
 
-            patient_diagnosis = patient_classifications[x]
-            # print("patient diagnosis is ",patient_diagnosis)
-            # print("single_patient_MRI size 0 gives ",single_patient_MRIs.size(0))
-            patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
-            patient_endstate = patient_endstate.long().to(args.device)
+                patient_diagnosis = patient_classifications[x]
+                # print("patient diagnosis is ",patient_diagnosis)
+                # print("single_patient_MRI size 0 gives ",single_patient_MRIs.size(0))
+                patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
+                patient_endstate = patient_endstate.long().to(args.device)
 
-            out = model(single_patient_MRIs)
+                out = model(single_patient_MRIs)
 
-            if len(out.shape)==1:
-                out = out[None,...]# in the case of a single input, we need padding
+                if len(out.shape)==1:
+                    out = out[None,...]# in the case of a single input, we need padding
 
-            print("model predictions are ",out)
-            print("patient endstate is ",patient_endstate)
-            model_predictions = out
+                print("model predictions are ",out)
+                print("patient endstate is ",patient_endstate)
+                model_predictions = out
 
-            # print("model predictions are ",model_predictions)
-            loss = criterion(model_predictions, patient_endstate)
-            loss.backward()
-            optimizer.step()
-            epoch_loss += loss
+                # print("model predictions are ",model_predictions)
+                loss = criterion(model_predictions, patient_endstate)
+                loss.backward()
+                optimizer.step()
+                epoch_loss += loss
+            except Exception as e:
+                epoch_loss += 0
+                epoch_length -= 1
+                print("EXCEPTION CAUGHT:",e.message)
 
-    return epoch_loss/len(training_data)
+    return epoch_loss/epoch_length
 
 def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
@@ -176,30 +183,38 @@ def test(model, test_data, criterion):
         patient_MRIs = patient_data["images"].to(args.device)
         # patient_MRI = patient_MRI.to(device=args.device)
         # print(patient_MRI.shape)
+
         patient_classifications = patient_data["label"]
+        print("Patient batch classes ", patient_classifications)
         for x in range(len(patient_MRIs)):
-            # clear hidden states to give each patient a clean slate
-            model.hidden = model.init_hidden()
-            single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1, 1, data_shape[0], data_shape[1],
-                                                                            data_shape[2])
-            single_patient_MRIs = single_patient_MRIs
-            # print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
-            patient_diagnosis = patient_classifications[x]
-            patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
-            patient_endstate = patient_endstate.long().to(args.device)
+            try:
+                # clear hidden states to give each patient a clean slate
+                model.hidden = model.init_hidden()
+                single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1, 1, data_shape[0], data_shape[1],
+                                                                                data_shape[2])
+                single_patient_MRIs = single_patient_MRIs
+                # print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
+                patient_diagnosis = patient_classifications[x]
+                patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
+                patient_endstate = patient_endstate.long().to(args.device)
 
-            out = model(single_patient_MRIs)
+                out = model(single_patient_MRIs)
 
-            if len(out.shape)==1:
-                out = out[None,...]# in the case of a single input, we need padding
+                if len(out.shape)==1:
+                    out = out[None,...]# in the case of a single input, we need padding
 
-            model_predictions = out
+                model_predictions = out
 
-            # print("model predictions are ",model_predictions)
-            loss = criterion(model_predictions, patient_endstate)
-            epoch_loss += loss
+                # print("model predictions are ",model_predictions)
+                loss = criterion(model_predictions, patient_endstate)
+                epoch_loss += loss
+                print("Current Model loss ",loss)
+            except Exception as e:
+                epoch_loss += 0
+                epoch_length -= 1
+                print("EXCEPTION CAUGHT:", e.message)
 
-    return epoch_loss / len(training_data)
+    return epoch_loss / epoch_length
 
 # perform training and measure test accuracy. Save best performing model.
 best_test_accuracy = float('inf')
