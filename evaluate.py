@@ -39,7 +39,7 @@ torch.manual_seed(1)
 random.seed(1)
 
 # ============= Hyperparameters ===================
-BATCH_SIZE = 64
+BATCH_SIZE = 10 # FIXME: used to be 64
 # Dimensionality of the data outputted by the LSTM,
 # forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
 LSTM_output_size = 16
@@ -85,6 +85,8 @@ MRI_images_list = MRI_images_list[:4]
 
 # How much of the data will be reserved for testing?
 train_size = int(0.7 * len(MRI_images_list))
+
+MRI_images_list = MRI_images_list[:10]
 
 # Split list
 training_list = MRI_images_list[:train_size]
