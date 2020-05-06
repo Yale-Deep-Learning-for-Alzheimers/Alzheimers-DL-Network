@@ -141,7 +141,7 @@ def train(model,training_data,optimizer,criterion):
             single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1,1,data_shape[0],data_shape[1],data_shape[2])
             # print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
             patient_diagnosis = patient_classifications[x]
-            patient_endstate = torch.ones(len(single_patient_MRIs)) * patient_diagnosis
+            patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
             patient_endstate = patient_endstate.long()
 
             out = model(single_patient_MRIs)

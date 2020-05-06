@@ -24,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/evaluate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="251">
-              <caret line="88" column="40" lean-forward="true" selection-start-line="88" selection-start-column="40" selection-end-line="88" selection-end-column="40" />
+            <state relative-caret-position="239">
+              <caret line="143" column="90" lean-forward="true" selection-start-line="143" selection-start-column="90" selection-end-line="143" selection-end-column="90" />
               <folding>
                 <element signature="e#80#91#0" expanded="true" />
               </folding>
@@ -245,7 +245,7 @@
       <workItem from="1588170125940" duration="1158000" />
       <workItem from="1588285370757" duration="22516000" />
       <workItem from="1588598556705" duration="9006000" />
-      <workItem from="1588699516841" duration="9895000" />
+      <workItem from="1588699516841" duration="10429000" />
     </task>
     <task id="LOCAL-00001" summary="Added hidden files, on the insistence of my compiler.">
       <created>1588170486876</created>
@@ -314,7 +314,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42609000" />
+    <option name="totallyTimeSpent" value="43143000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -410,8 +410,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/evaluate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="88" column="40" lean-forward="true" selection-start-line="88" selection-start-column="40" selection-end-line="88" selection-end-column="40" />
+        <state relative-caret-position="239">
+          <caret line="143" column="90" lean-forward="true" selection-start-line="143" selection-start-column="90" selection-end-line="143" selection-end-column="90" />
           <folding>
             <element signature="e#80#91#0" expanded="true" />
           </folding>
