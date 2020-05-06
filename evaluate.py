@@ -174,7 +174,7 @@ def train(model,training_data,optimizer,criterion):
 def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
     model.eval()
-    epoch_loss = 0
+    epoch_loss = torch.tensor(0.0)
     epoch_length = len(test_data)
     for i, patient_data in enumerate(test_data):
         if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTesting Progress:{i / len(test_data) * 100}%")
