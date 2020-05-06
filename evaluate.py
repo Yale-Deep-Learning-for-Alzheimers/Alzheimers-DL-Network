@@ -29,7 +29,7 @@ args.device = None
 print(args.disable_cuda)
 if torch.cuda.is_available():
     print("Using CUDA. : )")
-    torch.set_default_tensor_type('torch.cuda.FloatTensor')
+    # torch.set_default_tensor_type('torch.cuda.FloatTensor')
     args.device = torch.device('cuda')
 else:
     print("We aren't using CUDA.")
@@ -117,6 +117,7 @@ def train(model,training_data,optimizer,criterion):
         if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTraining Progress:{i / len(training_data) * 100}%")
         # Clear gradients
         model.zero_grad()
+        torch.cuda.empty_cache() # clear cuda memory
         batch_loss=torch.tensor(0.0)
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
@@ -156,9 +157,9 @@ def train(model,training_data,optimizer,criterion):
                 # print("model predictions are ",model_predictions)
                 loss = criterion(model_predictions, patient_endstate)
                 batch_loss += loss
-            except Exception:
+            except Exception as e:
                 batch_loss+=0
-                print("EXCEPTION CAUGHT:", sys.exc_info()[0])
+                print("EXCEPTION CAUGHT:",e)
         batch_loss.backward()
         print("batch loss is",batch_loss)
         optimizer.step()
@@ -181,6 +182,8 @@ def test(model, test_data, criterion):
         # Clear gradients
         model.zero_grad()
         batch_loss = torch.tensor(0)
+        torch.cuda.empty_cache() # clear cuda memory
+
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
@@ -216,10 +219,10 @@ def test(model, test_data, criterion):
                 loss = criterion(model_predictions, patient_endstate)
                 epoch_loss += loss
                 print("Current test loss ",loss)
-            except Exception:
+            except Exception as e:
                 epoch_loss += 0
                 epoch_length -= 1
-                print("EXCEPTION CAUGHT:", sys.exc_info()[0])
+                print("EXCEPTION CAUGHT:", e)
 
     if epoch_length == 0: epoch_length = 0.000001
     return epoch_loss / epoch_length
