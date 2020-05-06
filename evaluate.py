@@ -105,7 +105,7 @@ def train(model,training_data,optimizer,criterion):
         # clear the LSTM hidden state after each patient
         # print("Well, the model.hidden is",model.hidden)
         model.hidden = model.init_hidden()
-
+        print("Patient data is ",patient_data)
         #get the MRI's and classifications for the current patient
         patient_MRI = patient_data["images"]
         patient_MRI = patient_MRI.to(device=args.device)
@@ -151,10 +151,14 @@ def test(model, test_data, criterion):
         # clear the LSTM hidden state after each patient
         model.hidden = model.init_hidden()
 
+
         # get the MRI's and classifications for the current patient
-        patient_MRI = patient_data["images"]
-        patient_MRI = patient_MRI.to(device=args.device)
-        patient_classifications = patient_data["label"]
+        nonzero = patient_data["num_images"] # the number of images before padding starts
+        patient_MRI = patient_data["images"][:nonzero] # extract actual MRI
+        patient_classifications = patient_data["label"][:nonzero] # and classifications
+
+        patient_MRI = patient_MRI.to(device=args.device) # send to CUDA, if it exists.
+
         # print("patient classes ", patient_classifications)
         patient_endstate = torch.ones(len(patient_classifications)) * patient_classifications[-1]
         patient_endstate = patient_endstate.long()
@@ -190,7 +194,7 @@ for epoch in range(training_epochs):
     start_time = time.time()
 
     train_loss = train(model, training_data, optimizer, loss_function)
-    test_loss = 0 #test(model, test_data, loss_function)
+    test_loss = test(model, test_data, loss_function)
 
     end_time = time.time()
 
