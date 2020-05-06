@@ -80,7 +80,7 @@ random.shuffle(MRI_images_list)
                                       # root dir should be './data_sample/'
 # print(MRI_images_list)
 # NOTE: For testing on Farnam cluster
-MRI_images_list = MRI_images_list[:4]
+# MRI_images_list = MRI_images_list[:4]
 # >>>>>>> 4da380244e90113833ad6d03e0483fe38046367c
 
 # How much of the data will be reserved for testing?
