@@ -27,9 +27,9 @@ parser.add_argument('--disable-cuda', action='store_true', default=False,
 args = parser.parse_args()
 args.device = None
 print(args.disable_cuda)
-if not args.disable_cuda and torch.cuda.is_available():
-    args.device = torch.device('cuda')
+if torch.cuda.is_available():
     print("Using CUDA. : )")
+    args.device = torch.device('cuda')
 else:
     print("We aren't using CUDA.")
     args.device = torch.device('cpu')
@@ -142,6 +142,11 @@ def train(model,training_data,optimizer,criterion):
 
             out = model(single_patient_MRIs)
 
+            if len(out.shape)==1:
+                out = out[None,...]# in the case of a single input, we need padding
+
+            print("model predictions are ",out)
+            print("patient endstate is ",patient_endstate)
             model_predictions = out
 
             # print("model predictions are ",model_predictions)
@@ -184,6 +189,9 @@ def test(model, test_data, criterion):
             patient_endstate = patient_endstate.long()
 
             out = model(single_patient_MRIs)
+
+            if len(out.shape)==1:
+                out = out[None,...]# in the case of a single input, we need padding
 
             model_predictions = out
 
