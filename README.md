@@ -29,7 +29,7 @@ Our prediction network combines a convolutional neural network (CNN), which comp
     
     ![equation](https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cwidetilde%7Bc%7D%5E%7B%28t%29%7D%20%26%3D%20%5Ctanh%5Cleft%28W%5E%7B%28c%29%7Dx%5E%7B%28t%29%7D%20&plus;%20U%5E%7B%28c%29%7Dh%5E%7B%28t-1%29%7D%5Cright%29)
     
-    The input gate uses the input data and past hidden state to produce $i^{(t)}$ to gate the new memory, determining what information is valuable and should be remembered. 
+    The input gate uses the input data and past hidden state to produce *i*<sup>(*t*)</sup> to gate the new memory, determining what information is valuable and should be remembered. 
     
     ![equation](https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Clarge%20i%5E%7B%28t%29%7D%20%26%3D%20%5Csigma%5Cleft%28W%5E%7B%28i%29%7Dx%5E%7B%28t%29%7D%20&plus;%20U%5E%7B%28i%29%7Dh%5E%7B%28t-1%29%7D%5Cright%29)
     
@@ -45,7 +45,7 @@ Our prediction network combines a convolutional neural network (CNN), which comp
     
     ![equation](https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Cbegin%7Balign*%7D%20o%5E%7B%28t%29%7D%20%26%3D%20%5Csigma%5Cleft%28W%5E%7B%28o%29%7Dx%5E%7B%28t%29%7D%20&plus;%20U%5E%7B%28o%29%7Dh%5E%7B%28t-1%29%7D%5Cright%29%20%5C%5C%20h%5E%7B%28t%29%7D%20%26%3D%20o%5E%7B%28t%29%7D%20%5Ccirc%20%5Ctanh%5Cleft%28c%5E%7B%28t%29%7D%5Cright%29%20%5Cend%7Balign*%7D)
 
-4. Linear Layer: Map from LSTM hidden space (with dimension $d_h$) to prediction space (with dimension $d_p$).    
+4. Linear Layer: Map from LSTM hidden space (with dimension *d*<sub>*h*</sub>) to prediction space (with dimension *d*<sub>*p*</sub>).    
     
     ![equation](https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Clarge%20%5Ctexttt%7BLinear%3A%7D%20%5C%3B%20%5Cmathbb%7BR%7D%5E%7Bd_h%7D%20%5Cmapsto%20%5Cmathbb%7BR%7D%5E%7Bd_p%7D)
 
