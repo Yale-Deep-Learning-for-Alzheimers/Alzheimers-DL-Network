@@ -5,7 +5,8 @@ A CNN-LSTM deep learning model for multistage classification and prognostic pred
 
 Deep convolutional neural networks augmented with a recurrent LSTM mechanism offer a powerful solution for detecting, classifying, and predicting prognoses of Alzheimer’s in patients based on MRI scans.
 
-Our project proposes to train a neural network with CNN-LSTM architecture on MRI neuroimage data of Alzheimer’s patients to (1) detect and classify stages of Alzheimer’s and (2) yield predictive prognoses of future disease progression for individual patients based on previous MRI sequencing.
+Our project develops and trains a deep convolutional LSTM neural network on MRI neuroimage data of Alzheimer’s patients to yield predictive prognoses of future disease progression for individual patients based on previous MRI sequencing. The model takes in a sequence of MRI neuroimages and yields the likelihood of conversion from MCI to AD as a prognostic prediction.
+
 
 ## Model Architecture
 
