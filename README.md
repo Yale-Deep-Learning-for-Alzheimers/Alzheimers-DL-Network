@@ -5,7 +5,7 @@ A CNN-LSTM deep learning model for multistage classification and prognostic pred
 
 Deep convolutional neural networks augmented with a recurrent LSTM mechanism offer a powerful solution for detecting, classifying, and predicting prognoses of Alzheimer’s in patients based on MRI scans.
 
-Our project develops and trains a deep convolutional LSTM neural network on MRI neuroimage data of Alzheimer’s patients to yield predictive prognoses of future disease progression for individual patients based on previous MRI sequencing. The model takes in a sequence of MRI neuroimages and yields the likelihood of conversion from MCI to AD as a prognostic prediction.
+Our project develops and trains a deep convolutional LSTM neural network on MRI neuroimage data of Alzheimer’s patients to yield predictive prognoses of future disease progression for individual patients based on previous MRI sequencing. The model takes in a sequence of MRI neuroimages and yields the likelihood of conversion from mild cognitive impairment (MCI) to Alzheimer's disease (AD) as a prognostic prediction.
 
 
 ## Model Architecture
@@ -53,6 +53,6 @@ Our prediction network combines a convolutional neural network (CNN), which comp
     
     ![equation](https://latex.codecogs.com/svg.latex?%5Cdpi%7B150%7D%20%5Clarge%20C%20%3D%20-%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_x%20%5Cleft%5By%20%5Cln%20%5Chat%7By%7D%20&plus;%20%281%20-%20y%29%20%5Cln%20%281%20-%20%5Chat%7By%7D%29%5Cright%5D)
 
-Thus, after training, the model takes as input an arbitrary number of MRI scans for a specific patient and outputs the described probability of a positive diagnosis within the next five years. A probability of 1 indicates present diagnosis. Lower probabilities may indicate the patient’s distance from incurring a positive diagnosis. 
+Thus, after training, the model takes as input a sequence of MRI scans for a patient and outputs the described probability of a conversion from MCI to AD. A probability of 1 indicates present diagnosis of Alzheimer's disease. Lower probabilities may indicate the patient’s distance from incurring a positive diagnosis. 
 
 <em>"Prognostic Prediction and Classification of Alzheimer’s Neuroimage Sequences with a Convolutional LSTM Network" is a project for CS 452/663: Deep Learning Theory and Applications, Spring 2020.</em>
