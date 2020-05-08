@@ -1,5 +1,5 @@
 # Prognostic Prediction and Classification of Alzheimer’s Neuroimage Sequences with a Convolutional LSTM Network
-A CNN-LSTM deep learning model for multistage classification and prognostic prediction of Alzheimer's MRI neuroimages.
+A CNN-LSTM deep learning model for prognostic prediction and classification of Alzheimer's MRI neuroimages.
 
 ## Abstract
 
@@ -11,6 +11,8 @@ Our project develops and trains a deep convolutional LSTM neural network on MRI 
 ## Model Architecture
 
 Our prediction network combines a convolutional neural network (CNN), which compresses the neuroimages by extracting learned features; and a long short-term memory (LSTM) cell, which combines the extracted features with those of previously-inputted MRI scans for each patient. The output of the LSTM is fed through a single fully connected layer, to translate the multidimensional LSTM output into a single probability between 0 and 1. This network will be trained to produce the probability that a patient will develop Alzheimer’s within the next five years, weighed against a loss function that aggregates diagnoses for individual patients over time.
+
+![image](architecture-diagram.png)
 
 ### Forward Pass
 
