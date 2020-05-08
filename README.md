@@ -10,7 +10,7 @@ Our project develops and trains a deep convolutional LSTM neural network on MRI 
 
 ## Model Architecture
 
-Our prediction network combines a convolutional neural network (CNN), which compresses the MRI neuroimages by extracting learned features; and a single long short-term memory (LSTM) cell, which combines the extracted features with those of previously inputted MRI neuroimages. The output of the LSTM is fed through a single fully connected layer, to translate the multidimensional LSTM output into a single probability between 0 and 1. This network will be trained to produce the probability that a patient will develop Alzheimer’s within the next five years, weighed against a loss function that aggregates diagnoses for individual patients over time.
+Our prediction network combines a convolutional neural network (CNN), which compresses the neuroimages by extracting learned features; and a long short-term memory (LSTM) cell, which combines the extracted features with those of previously-inputted MRI scans for each patient. The output of the LSTM is fed through a single fully connected layer, to translate the multidimensional LSTM output into a single probability between 0 and 1. This network will be trained to produce the probability that a patient will develop Alzheimer’s within the next five years, weighed against a loss function that aggregates diagnoses for individual patients over time.
 
 ### Forward Pass
 
