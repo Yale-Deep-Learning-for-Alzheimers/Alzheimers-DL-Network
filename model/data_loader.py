@@ -52,7 +52,6 @@ class MRIData(Dataset):
         """
         
         # Get current_patient, where [0] is their ID and [1] is their list of images
-        # NOTE: you can't index current_patient[1] to get the list of images, you just index current_patient itself... not sure why this works but it works
         current_patient = self.data_array[index]
         # List to store the individual image tensors
         images_list = []
@@ -97,6 +96,5 @@ class MRIData(Dataset):
 
         # Return a dictionary with the images tensor and the label
         image_dict = {'images': images_tensor, 'label': patient_label, 'num_images':num_images}
-        # NOTE: alternative approach is to just have the classification be the first element in the images_tensor
 
         return image_dict
