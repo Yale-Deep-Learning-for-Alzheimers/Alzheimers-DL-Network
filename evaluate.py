@@ -35,17 +35,17 @@ else:
     print("We aren't using CUDA.")
     args.device = torch.device('cpu')
 
-# torch.manual_seed(314159265368979323846264338327950288419716939937510) # for reproducibility for testing purposes. Delete during actual training.
-# NOTE: don't change the seed numbers as we debug, or we might introduce user bias into the model!
-torch.manual_seed(1)
-random.seed(1)
+# For reproducibility for testing purposes. Delete during actual training.
+# torch.manual_seed(1)
+# random.seed(1)
 
-# ============= Hyperparameters ===================
-BATCH_SIZE = 10 # FIXME: used to be 64
+## Hyperparameters
+
+BATCH_SIZE = 10
 # Dimensionality of the data outputted by the LSTM,
-# forwarded to the final dense layer. THIS IS A GUESS CURRENTLY.
+# forwarded to the final dense layer.
 LSTM_output_size = 16
-input_size = 1 # FIXME: used to be 3 # Size of the processed MRI scans fed into the CNN.
+input_size = 1 # Size of the processed MRI scans fed into the CNN.
 
 output_dimension = 2 # the number of predictions the model will make
 # 2 used for binary prediction for each image.
@@ -57,34 +57,16 @@ training_epochs = 5
 data_shape = (200,200,150)
 # Other hyperparameters unlisted: the depth of the model, the kernel size, the padding, the channel restriction.
 
-# ========== TODO: Import Data ==============
-# expected format:
-# training_data stores batches of MRI's and classifications like this: [batch,batch,batch] : )
-# each batch should be in form
-# [Bunch of MRIs, Bunch of Classifications]
-# and each 'bunch' in the batch should be grouped by patient
-# Bunch of MRIs = [Patient 1 MRIs, Patient 2 MRIs,...]
-# Bunch of Classifications = [Patient 1 classifications, Patient 2 Classifications...]
-# the Classifications should be binary 0,1 probabilities in output_dimension dimensions. Perhaps something like this:
-# [chance_of_normality: 0 , chance of MCI: 0, chance of AD: 1]
 
+## Import Data
 MRI_images_list = pickle.load(open("./Data/Combined_MRI_List.pkl", "rb"))
 random.shuffle(MRI_images_list)
-# NOTE: simply for testing out the data loader, take the first three images from the list
 
-# print(MRI_images_list)
-# NOTE: For testing on Farnam cluster
-# MRI_images_list = MRI_images_list[:4]
-# >>>>>>> 4da380244e90113833ad6d03e0483fe38046367c
-
-# How much of the data will be reserved for testing?
 train_size = int(0.7 * len(MRI_images_list))
 
 # Split list
 training_list = MRI_images_list[:train_size]
 test_list =  MRI_images_list[train_size:]
-
-# print(MRI_images_list)
 
 DATA_ROOT_DIR = './'
 train_dataset = MRIData(DATA_ROOT_DIR, training_list)
@@ -97,67 +79,64 @@ training_data = train_loader
 test_data = test_loader
 
 
-# ================== Define Model =========================================
+## Define Model
 model = Network(input_size, data_shape, output_dimension).to(args.device)
 
 loss_function = nn.CrossEntropyLoss()
 
-# Perhaps use ADAM, if SGD doesn't give good results
 optimizer = optim.SGD(model.parameters(), lr=learning_rate)
 
-# training function
+
+## Training Function
 def train(model,training_data,optimizer,criterion):
     """ takes (model, training data, optimizer, loss function)"""
-    # activate training mode
+    # Activate training mode
     model.train()
-    # initialize the per epoch loss
+    # Initialize the per epoch loss
     epoch_loss = 0
     epoch_length = len(training_data)
     for i, patient_data in enumerate(training_data):
         if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTraining Progress:{i / len(training_data) * 100}%")
         # Clear gradients
         model.zero_grad()
-        torch.cuda.empty_cache() # clear cuda memory
+        torch.cuda.empty_cache() # Clear CUDA memory
         batch_loss=torch.tensor(0.0).to(args.device)
-        # clear the LSTM hidden state after each patient
-        # print("Well, the model.hidden is",model.hidden)
+
+        # Clear the LSTM hidden state after each patient
         model.hidden = model.init_hidden()
-        # print("Patient data is ",patient_data, "with shape",patient_data['images'].shape)
-        #get the MRI's and classifications for the current patient
+
+        # Get the MRI's and classifications for the current patient
         patient_markers = patient_data['num_images']
         patient_MRIs = patient_data["images"].to(args.device)
-        # patient_MRI = patient_MRI.to(device=args.device)
-        # print(patient_MRI.shape)
 
         patient_classifications = patient_data["label"]
         print("Patient batch classes ", patient_classifications)
+
         for x in range(len(patient_MRIs)):
             try:
-                # clear hidden states to give each patient a clean slate
+                # Clear hidden states to give each patient a clean slate
                 model.hidden = model.init_hidden()
                 single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1,1,data_shape[0],data_shape[1],data_shape[2])
-                # print("Single patient MRIs are ",single_patient_MRIs,"with shape",single_patient_MRIs.shape)
 
                 patient_diagnosis = patient_classifications[x]
-                # print("patient diagnosis is ",patient_diagnosis)
-                # print("single_patient_MRI size 0 gives ",single_patient_MRIs.size(0))
                 patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
                 patient_endstate = patient_endstate.long().to(args.device)
 
                 out = model(single_patient_MRIs)
 
                 if len(out.shape)==1:
-                    out = out[None,...]# in the case of a single input, we need padding
+                    out = out[None,...] # In the case of a single input, we need padding
 
                 print("model predictions are ",out)
                 print("patient endstate is ",patient_endstate)
                 model_predictions = out
 
-                # print("model predictions are ",model_predictions)
                 loss = criterion(model_predictions, patient_endstate)
                 batch_loss += loss
+
             except Exception as e:
                 print("EXCEPTION CAUGHT:",e)
+
         batch_loss.backward()
         print("batch loss is",batch_loss)
         optimizer.step()
@@ -167,9 +146,7 @@ def train(model,training_data,optimizer,criterion):
     return epoch_loss / epoch_length
 
 
-
-
-
+## Testing Function
 def test(model, test_data, criterion):
     """takes (model, test_data, loss function) and returns the epoch loss."""
     model.eval()
@@ -179,28 +156,23 @@ def test(model, test_data, criterion):
         if i % (math.floor(epoch_length / 5) + 1) == 0: print(f"\t\tTesting Progress:{i / len(test_data) * 100}%")
         # Clear gradients
         model.zero_grad()
-        torch.cuda.empty_cache() # clear cuda memory
+        torch.cuda.empty_cache() # Clear CUDA memory
 
-        # clear the LSTM hidden state after each patient
-        # print("Well, the model.hidden is",model.hidden)
+        # Clear the LSTM hidden state after each patient
         model.hidden = model.init_hidden()
-        # print("Patient data is ", patient_data, "with shape", patient_data['images'].shape)
-        # get the MRI's and classifications for the current patient
+        # Get the MRI's and classifications for the current patient
         patient_markers = patient_data['num_images']
         patient_MRIs = patient_data["images"].to(args.device)
-        # patient_MRI = patient_MRI.to(device=args.device)
-        # print(patient_MRI.shape)
 
         patient_classifications = patient_data["label"]
         print("Patient batch classes ", patient_classifications)
         for x in range(len(patient_MRIs)):
             try:
-                # clear hidden states to give each patient a clean slate
+                # Clear hidden states to give each patient a clean slate
                 model.hidden = model.init_hidden()
                 single_patient_MRIs = patient_MRIs[x][:patient_markers[x]].view(-1, 1, data_shape[0], data_shape[1],
                                                                                 data_shape[2])
                 single_patient_MRIs = single_patient_MRIs
-                # print("Single patient MRIs are ", single_patient_MRIs, "with shape", single_patient_MRIs.shape)
                 patient_diagnosis = patient_classifications[x]
                 patient_endstate = torch.ones(single_patient_MRIs.size(0)) * patient_diagnosis
                 patient_endstate = patient_endstate.long().to(args.device)
@@ -208,11 +180,10 @@ def test(model, test_data, criterion):
                 out = model(single_patient_MRIs)
 
                 if len(out.shape)==1:
-                    out = out[None,...]# in the case of a single input, we need padding
+                    out = out[None,...] # In the case of a single input, we need padding
 
                 model_predictions = out
 
-                # print("model predictions are ",model_predictions)
                 loss = criterion(model_predictions, patient_endstate)
                 epoch_loss += loss
                 print("Current test loss ",loss)
@@ -223,10 +194,11 @@ def test(model, test_data, criterion):
     if epoch_length == 0: epoch_length = 0.000001
     return epoch_loss / epoch_length
 
-# perform training and measure test accuracy. Save best performing model.
+# Perform training and measure test accuracy. Save best performing model.
 best_test_accuracy = float('inf')
 
-# this evaluation workflow was adapted from Ben Trevett's design on https://github.com/bentrevett/pytorch-seq2seq/blob/master/1%20-%20Sequence%20to%20Sequence%20Learning%20with%20Neural%20Networks.ipynb
+# This evaluation workflow below was adapted from Ben Trevett's design
+# on https://github.com/bentrevett/pytorch-seq2seq/blob/master/1%20-%20Sequence%20to%20Sequence%20Learning%20with%20Neural%20Networks.ipynb
 for epoch in range(training_epochs):
 
     start_time = time.time()
@@ -248,5 +220,3 @@ for epoch in range(training_epochs):
         print("...that was our best test accuracy yet!")
         best_test_accuracy=test_loss
         torch.save(model.state_dict(),'ad-model.pt')
-
-
