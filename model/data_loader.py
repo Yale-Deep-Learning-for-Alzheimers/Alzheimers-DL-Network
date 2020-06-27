@@ -98,3 +98,5 @@ class MRIData(Dataset):
         image_dict = {'images': images_tensor, 'label': patient_label, 'num_images':num_images}
 
         return image_dict
+
+        
