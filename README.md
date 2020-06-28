@@ -9,7 +9,7 @@ Our project develops and trains a deep convolutional LSTM neural network on MRI 
 
 ## Data
 
-Our model is trained on structural MRI scans from the ADNI (Alzheimer's Disease Neuroimaging Initiative) database, which contains neuroimages assigned one of three labels: control (CN), representing no disorder; mild cognitive impairment (MCI); and Alzheimer's disease (AD). The MRI data's voxels are approximately 200 $\times$ 200 $\times$ 150 in resolution; since the exact resolutions of each image differ across the ADNI studies, the images are preprocessed to normalize dimensions. The images are in NIfTI file format (i.e. `.nii`), which are processed using the `nibabel` library before being converted to tensors for the model.
+Our model is trained on structural MRI scans from the ADNI (Alzheimer's Disease Neuroimaging Initiative) database, which contains neuroimages assigned one of three labels: control (CN), representing no disorder; mild cognitive impairment (MCI); and Alzheimer's disease (AD). Since the exact resolutions of each neuroimage differ across the ADNI studies, the images are preprocessed to normalize dimensions. The images are in NIfTI file format (i.e. `.nii`), which are processed using the `nibabel` library before being converted to tensors for the model.
 
 ## Model Architecture
 
