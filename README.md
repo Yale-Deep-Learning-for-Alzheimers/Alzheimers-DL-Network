@@ -7,6 +7,9 @@ Deep convolutional neural networks augmented with a recurrent LSTM mechanism off
 
 Our project develops and trains a deep convolutional LSTM neural network on MRI neuroimage data of Alzheimer’s patients to yield predictive prognoses of future disease progression for individual patients based on previous MRI sequencing. The model takes in a sequence of MRI neuroimages and yields the likelihood of conversion from mild cognitive impairment (MCI) to Alzheimer's disease (AD) as a prognostic prediction.
 
+## Data
+
+Our model is trained on structural MRI scans from the ADNI (Alzheimer's Disease Neuroimaging Initiative) database, which contains neuroimages assigned one of three labels: control (CN), representing no disorder; mild cognitive impairment (MCI); and Alzheimer's disease (AD). The MRI data's voxels are approximately 200 $\times$ 200 $\times$ 150 in resolution; since the exact resolutions of each image differ across the ADNI studies, the images are preprocessed to normalize dimensions. The images are in NIfTI file format (i.e. `.nii`), which are processed using the `nibabel` library before being converted to tensors for the model.
 
 ## Model Architecture
 
